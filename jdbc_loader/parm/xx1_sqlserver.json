@@ -1,0 +1,179 @@
+
+
+{
+
+"jdbc_tables_infos": [
+
+{
+
+"jdbc_table": "azienda_gerarchia_abbi",
+
+"jdbc_schema": "dbo",
+
+"jdbc_ingest_type": "full",
+
+"jdbc_reference_column": "",
+
+"jdbc_reference_column_type": "",
+
+"jdbc_partition_column": "",
+
+"jdbc_partition_column_type": "",
+
+"jdbc_num_partitions": 8,
+
+"jdbc_fetchsize": 10000,
+
+"jdbc_lower_bound": "",
+
+"jdbc_upper_bound": "",
+
+"jdbc_query": "",
+
+"hive_table": "xx_jdbc_server",
+
+"hive_database": "{{db_hive_brute}}",
+
+"hive_table_full": "",
+
+"hive_ingest_full": false,
+
+"hive_schema_partition": "",
+
+"hive_table_format": "parquet",
+
+"hive_write_mode": "overwrite"
+
+},
+
+{
+
+"jdbc_table": "CATEGORIA",
+
+"jdbc_schema": "dbo",
+
+"jdbc_ingest_type": "delta",
+
+"jdbc_reference_column": "dateupd",
+
+"jdbc_reference_column_type": "DATETIME2(3)",
+
+"jdbc_partition_column": "",
+
+"jdbc_partition_column_type": "",
+
+"jdbc_num_partitions": 8,
+
+"jdbc_fetchsize": 10000,
+
+"jdbc_lower_bound": "",
+
+"jdbc_upper_bound": "",
+
+"jdbc_query": "",
+
+"hive_table": "xx_jdbc_server_cat",
+
+"hive_database": "{{db_hive_brute}}",
+
+"hive_table_full": "xx_jdbc_server_cat_full",
+
+"hive_ingest_full": true,
+
+"hive_schema_partition": "",
+
+"hive_table_format": "parquet",
+
+"hive_write_mode": "append"
+
+},
+
+{
+
+"_comment": "on teste le delta query sql server",
+
+"jdbc_table": "CATEGORIA",
+
+"jdbc_schema": "dbo",
+
+"jdbc_ingest_type": "delta_query",
+
+"jdbc_reference_column": "dateupd",
+
+"jdbc_reference_column_type": "DATETIME2(3)",
+
+"jdbc_partition_column": "",
+
+"jdbc_partition_column_type": "",
+
+"jdbc_num_partitions": 8,
+
+"jdbc_fetchsize": 10000,
+
+"jdbc_lower_bound": "",
+
+"jdbc_upper_bound": "",
+
+"jdbc_query": "select COD_CATEGORIA ,dateupd from dbo.CATEGORIA",
+
+"hive_table": "xx_jdbc_sqlserver_deltaquery",
+
+"hive_database": "{{db_hive_brute}}",
+
+"hive_table_full": "data_gen_full",
+
+"hive_ingest_full": false,
+
+"hive_schema_partition": "",
+
+"hive_table_format": "parquet",
+
+"hive_write_mode": "overwrite_par_partition"
+
+},
+
+{
+
+"jdbc_table": "DATI_SALDI_LORDI",
+
+"jdbc_schema": "dbo",
+
+"jdbc_ingest_type": "delta_query",
+
+"jdbc_reference_column": "dateupd",
+
+"jdbc_reference_column_type": "DATETIME2(3)",
+
+"jdbc_partition_column": "",
+
+"jdbc_partition_column_type": "",
+
+"jdbc_num_partitions": 8,
+
+"jdbc_fetchsize": 10000,
+
+"jdbc_lower_bound": "",
+
+"jdbc_upper_bound": "",
+
+"jdbc_query": "SELECT * from dati_saldi_lordi WHERE cod_categoria = 'IND'",
+
+"hive_table": "dati_saldi_lordi",
+
+"hive_database": "{{db_hive_brute}}",
+
+"hive_table_full": "dati_saldi_lordi_full",
+
+"hive_ingest_full": false,
+
+"hive_schema_partition": "",
+
+"hive_table_format": "parquet",
+
+"hive_write_mode": "overwrite"
+
+}
+
+]
+
+}
