@@ -1,0 +1,13 @@
+pyspark>=3.1.2
+pytz
+# JDBC drivers - add versions if needed
+py4j
+# If icdc is a custom package, you may need to install it separately or add it as a local dependency
+# For PostgreSQL
+psycopg2-binary
+# For Oracle
+cx_Oracle
+# For MySQL
+mysql-connector-python
+# For SQL Server
+pyodbc
