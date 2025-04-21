@@ -1,49 +1,25 @@
 {
-
     "jdbc_tables_infos": [
-    
-    {
-    
-    "jdbc_table": "ta_demande",
-    
-    "jdbc_schema": "cicladepgpproj",
-    
-    "jdbc_ingest_type": "full",
-    
-    "jdbc_reference_column": "",
-    
-    "jdbc_reference_column_type": "",
-    
-    "jdbc_partition_column": "",
-    
-    "jdbc_partition_column_type": "",
-    
-    "jdbc_num_partitions": 1,
-    
-    "jdbc_fetchsize": 10000,
-    
-    "jdbc_lower_bound": "",
-    
-    "jdbc_upper_bound": "",
-    
-    "jdbc_query": "",
-    
-    "hive_table": "ta_demande",
-    
-    "hive_database": "{{db_hive_brute}}",
-    
-    "hive_table_full": "",
-    
-    "hive_ingest_full": false,
-    
-    "hive_schema_partition": "",
-    
-    "hive_table_format": "parquet",
-    
-    "hive_write_mode": "overwrite"
-    
-    }
-    
+        {
+            "jdbc_table": "ta_demande",
+            "jdbc_schema": "cicladepgpproj",
+            "jdbc_ingest_type": "full",
+            "jdbc_reference_column": "",
+            "jdbc_reference_column_type": "",
+            "jdbc_partition_column": "",
+            "jdbc_partition_column_type": "",
+            "jdbc_num_partitions": 1,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "",
+            "jdbc_upper_bound": "",
+            "jdbc_query": "",
+            "hive_table": "ta_demande",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "",
+            "hive_ingest_full": false,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "overwrite"
+        }
     ]
-    
-    }
+}

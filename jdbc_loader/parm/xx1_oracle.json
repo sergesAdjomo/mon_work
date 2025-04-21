@@ -1,223 +1,111 @@
-
 {
-
-"jdbc_tables_infos": [
-
-{
-
-"jdbc_table": "XXCED_LAKE_PERIODES_GL_V",
-
-"jdbc_schema": "APPS",
-
-"jdbc_ingest_type": "full",
-
-"jdbc_reference_column": "",
-
-"jdbc_reference_column_type": "",
-
-"jdbc_partition_column": "ANNEE_PERIODE",
-
-"jdbc_partition_column_type": "date",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_lower_bound": "auto",
-
-"jdbc_upper_bound": "auto",
-
-"jdbc_query": "",
-
-"hive_table": "PERIODES_GL_V",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "",
-
-"hive_ingest_full": false,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "overwrite"
-
-},
-
-{
-
-"jdbc_table": "XXCED_LAKE_ATT_OP_V",
-
-"jdbc_schema": "APPS",
-
-"jdbc_ingest_type": "delta",
-
-"jdbc_reference_column": "date_maj_periode",
-
-"jdbc_reference_column_type": "timestamp",
-
-"jdbc_partition_column": "NUM_FIC",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_lower_bound": "0",
-
-"jdbc_upper_bound": "999999999",
-
-"jdbc_query": "",
-
-"hive_table": "LAKE_ATT_OP_V",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "",
-
-"hive_ingest_full": false,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "append"
-
-},
-
-{
-
-"jdbc_table": "XXCED_LAKE_ATT_OP_V",
-
-"jdbc_schema": "APPS",
-
-"jdbc_ingest_type": "query",
-
-"jdbc_reference_column": "",
-
-"jdbc_reference_column_type": "timestamp",
-
-"jdbc_partition_column": "",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_lower_bound": "",
-
-"jdbc_upper_bound": "",
-
-"jdbc_query": "select * from APPS.XXCED_LAKE_ATT_OP_V where periode='DEC-2023'",
-
-"hive_table": "XXCED_LAKE_ATT_OP_V_QUERY",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "XXCED_LAKE_ATT_OP_V_QUERY_full",
-
-"hive_ingest_full": false,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "overwrite"
-
-},
-
-{
-
-"_comment": "on teste le delta query oracle",
-
-"jdbc_table": "XXCED_LAKE_PERIODES_GL_V",
-
-"jdbc_schema": "APPS",
-
-"jdbc_ingest_type": "delta_query",
-
-"jdbc_reference_column": "last_update_date",
-
-"jdbc_reference_column_type": "timestamp",
-
-"jdbc_partition_column": "",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_lower_bound": "",
-
-"jdbc_upper_bound": "",
-
-"jdbc_query": "select nom_periode,cod_statut_periode,last_update_date from APPS.XXCED_LAKE_PERIODES_GL_V",
-
-"hive_table": "PERIODES_GL_V_deltaquery",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "",
-
-"hive_ingest_full": false,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "overwrite"
-
-},
-
-{
-
-"_comment": "on teste le full avec jdbc_partition_column null sur oracle",
-
-"jdbc_table": "XXCED_LAKE_PERIODES_GL_V",
-
-"jdbc_schema": "APPS",
-
-"jdbc_ingest_type": "full",
-
-"jdbc_reference_column": "",
-
-"jdbc_reference_column_type": "",
-
-"jdbc_partition_column": "",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_lower_bound": "",
-
-"jdbc_upper_bound": "",
-
-"jdbc_query": "",
-
-"hive_table": "PERIODES_GL_V_PC_NULL",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "",
-
-"hive_ingest_full": false,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "overwrite"
-
+    "jdbc_tables_infos": [
+        {
+            "jdbc_table": "XXCED_LAKE_PERIODES_GL_V",
+            "jdbc_schema": "APPS",
+            "jdbc_ingest_type": "full",
+            "jdbc_reference_column": "",
+            "jdbc_reference_column_type": "",
+            "jdbc_partition_column": "ANNEE_PERIODE",
+            "jdbc_partition_column_type": "date",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "auto",
+            "jdbc_upper_bound": "auto",
+            "jdbc_query": "",
+            "hive_table": "PERIODES_GL_V",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "",
+            "hive_ingest_full": false,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "overwrite"
+        },
+        {
+            "jdbc_table": "XXCED_LAKE_ATT_OP_V",
+            "jdbc_schema": "APPS",
+            "jdbc_ingest_type": "delta",
+            "jdbc_reference_column": "date_maj_periode",
+            "jdbc_reference_column_type": "timestamp",
+            "jdbc_partition_column": "NUM_FIC",
+            "jdbc_partition_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "0",
+            "jdbc_upper_bound": "999999999",
+            "jdbc_query": "",
+            "hive_table": "LAKE_ATT_OP_V",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "",
+            "hive_ingest_full": false,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "append"
+        },
+        {
+            "jdbc_table": "XXCED_LAKE_ATT_OP_V",
+            "jdbc_schema": "APPS",
+            "jdbc_ingest_type": "query",
+            "jdbc_reference_column": "",
+            "jdbc_reference_column_type": "timestamp",
+            "jdbc_partition_column": "",
+            "jdbc_partition_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "",
+            "jdbc_upper_bound": "",
+            "jdbc_query": "select * from APPS.XXCED_LAKE_ATT_OP_V where periode='DEC-2023'",
+            "hive_table": "XXCED_LAKE_ATT_OP_V_QUERY",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "XXCED_LAKE_ATT_OP_V_QUERY_full",
+            "hive_ingest_full": false,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "overwrite"
+        },
+        {
+            "_comment": "on teste le delta query oracle",
+            "jdbc_table": "XXCED_LAKE_PERIODES_GL_V",
+            "jdbc_schema": "APPS",
+            "jdbc_ingest_type": "delta_query",
+            "jdbc_reference_column": "last_update_date",
+            "jdbc_reference_column_type": "timestamp",
+            "jdbc_partition_column": "",
+            "jdbc_partition_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "",
+            "jdbc_upper_bound": "",
+            "jdbc_query": "select nom_periode,cod_statut_periode,last_update_date from APPS.XXCED_LAKE_PERIODES_GL_V",
+            "hive_table": "PERIODES_GL_V_deltaquery",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "",
+            "hive_ingest_full": false,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "overwrite"
+        },
+        {
+            "_comment": "on teste le full avec jdbc_partition_column null sur oracle",
+            "jdbc_table": "XXCED_LAKE_PERIODES_GL_V",
+            "jdbc_schema": "APPS",
+            "jdbc_ingest_type": "full",
+            "jdbc_reference_column": "",
+            "jdbc_reference_column_type": "",
+            "jdbc_partition_column": "",
+            "jdbc_partition_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "",
+            "jdbc_upper_bound": "",
+            "jdbc_query": "",
+            "hive_table": "PERIODES_GL_V_PC_NULL",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "",
+            "hive_ingest_full": false,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "overwrite"
+        }
+    ]
 }
-
-]
-
-}
-

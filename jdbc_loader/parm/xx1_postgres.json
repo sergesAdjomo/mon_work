@@ -1,354 +1,177 @@
-
 {
-
-"jdbc_tables_infos": [
-
-{
-
-"jdbc_table": "data_gen",
-
-"jdbc_schema": "omair",
-
-"jdbc_ingest_type": "full",
-
-"jdbc_reference_column": "",
-
-"jdbc_reference_column_type": "timestamp(6)",
-
-"jdbc_partition_column": "id",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_lower_bound": "1",
-
-"jdbc_upper_bound": "100",
-
-"jdbc_query": "",
-
-"hive_table": "data_gen_posgres",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "data_gen_full",
-
-"hive_ingest_full": false,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "overwrite"
-
-},
-
-{
-
-"jdbc_table": "data_gen_2",
-
-"jdbc_schema": "omair",
-
-"jdbc_ingest_type": "full",
-
-"jdbc_reference_column": "",
-
-"jdbc_reference_column_type": "timestamp(3)",
-
-"jdbc_partition_column": "id",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_lower_bound": "auto",
-
-"jdbc_upper_bound": "auto",
-
-"jdbc_query": "",
-
-"hive_table": "data_gen_2_posgres",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "data_gen_2_full",
-
-"hive_ingest_full": false,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "overwrite"
-
-},
-
-{
-
-"jdbc_table": "data_gen_3",
-
-"jdbc_schema": "omair",
-
-"jdbc_ingest_type": "delta",
-
-"jdbc_reference_column": "date_maj",
-
-"jdbc_reference_column_type": "timestamp(3)",
-
-"jdbc_partition_column": "id",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_lower_bound": "1",
-
-"jdbc_upper_bound": "100",
-
-"jdbc_query": "",
-
-"hive_table": "data_gen_3_posgres",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "data_gen_3_full",
-
-"hive_ingest_full": false,
-
-"hive_schema_partition": [
-
-"job"
-
-],
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "append"
-
-},
-
-{
-
-"jdbc_table": "data_gen_4",
-
-"jdbc_schema": "omair",
-
-"jdbc_ingest_type": "delta",
-
-"jdbc_reference_column": "date_maj",
-
-"jdbc_reference_column_type": "timestamp(6)",
-
-"jdbc_partition_column": "id",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_lower_bound": "1",
-
-"jdbc_upper_bound": "100",
-
-"jdbc_query": "",
-
-"hive_table": "data_gen_4_posgres",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "data_gen_4_full",
-
-"hive_ingest_full": true,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "append"
-
-},
-
-{
-
-"jdbc_table": "data_gen_4",
-
-"jdbc_schema": "omair",
-
-"jdbc_ingest_type": "query",
-
-"jdbc_reference_column": "date_maj",
-
-"jdbc_reference_column_type": "timestamp(6)",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_query": "select id, nom from omair.data_gen",
-
-"hive_table": "data_gen_4_query",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "data_gen_4_query_full",
-
-"hive_ingest_full": true,
-
-"hive_write_mode": "overwrite",
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"jdbc_partition_column": "",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_lower_bound": "",
-
-"jdbc_upper_bound": ""
-
-},
-
-{
-
-"_comment": "on teste le query postgre",
-
-"jdbc_table": "faker_data",
-
-"jdbc_schema": "omair",
-
-"jdbc_ingest_type": "query",
-
-"jdbc_reference_column": "",
-
-"jdbc_reference_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_query": "select * from omair.faker_data",
-
-"hive_table": "faker_data",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "faker_data_full",
-
-"hive_ingest_full": false,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "overwrite",
-
-"jdbc_partition_column": "",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_lower_bound": "",
-
-"jdbc_upper_bound": ""
-
-},
-
-{
-
-"_comment": "on teste le delta query postgre",
-
-"jdbc_table": "data_gen",
-
-"jdbc_schema": "omair",
-
-"jdbc_ingest_type": "delta_query",
-
-"jdbc_reference_column": "date_maj",
-
-"jdbc_reference_column_type": "timestamp(6)",
-
-"jdbc_partition_column": "",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_lower_bound": "",
-
-"jdbc_upper_bound": "",
-
-"jdbc_query": "select id,nom,date_maj from omair.data_gen",
-
-"hive_table": "data_gen_posgres_deltaquery",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "data_gen_full",
-
-"hive_ingest_full": false,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "overwrite"
-
-},
-
-{
-
-"_comment": "on teste le full jdbc_partition_column null en postgre",
-
-"jdbc_table": "faker_data",
-
-"jdbc_schema": "omair",
-
-"jdbc_ingest_type": "full",
-
-"jdbc_reference_column": "",
-
-"jdbc_reference_column_type": "",
-
-"jdbc_num_partitions": 8,
-
-"jdbc_fetchsize": 10000,
-
-"jdbc_query": "",
-
-"hive_table": "faker_data_full_PC_NULL",
-
-"hive_database": "{{db_hive_brute}}",
-
-"hive_table_full": "faker_data_full",
-
-"hive_ingest_full": true,
-
-"hive_schema_partition": "",
-
-"hive_table_format": "parquet",
-
-"hive_write_mode": "overwrite",
-
-"jdbc_partition_column": "",
-
-"jdbc_partition_column_type": "",
-
-"jdbc_lower_bound": "",
-
-"jdbc_upper_bound": ""
-
-}
-
-]
-
+    "jdbc_tables_infos": [
+        {
+            "jdbc_table": "data_gen",
+            "jdbc_schema": "omair",
+            "jdbc_ingest_type": "full",
+            "jdbc_reference_column": "",
+            "jdbc_reference_column_type": "timestamp(6)",
+            "jdbc_partition_column": "id",
+            "jdbc_partition_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "1",
+            "jdbc_upper_bound": "100",
+            "jdbc_query": "",
+            "hive_table": "data_gen_posgres",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "data_gen_full",
+            "hive_ingest_full": false,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "overwrite"
+        },
+        {
+            "jdbc_table": "data_gen_2",
+            "jdbc_schema": "omair",
+            "jdbc_ingest_type": "full",
+            "jdbc_reference_column": "",
+            "jdbc_reference_column_type": "timestamp(3)",
+            "jdbc_partition_column": "id",
+            "jdbc_partition_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "auto",
+            "jdbc_upper_bound": "auto",
+            "jdbc_query": "",
+            "hive_table": "data_gen_2_posgres",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "data_gen_2_full",
+            "hive_ingest_full": false,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "overwrite"
+        },
+        {
+            "jdbc_table": "data_gen_3",
+            "jdbc_schema": "omair",
+            "jdbc_ingest_type": "delta",
+            "jdbc_reference_column": "date_maj",
+            "jdbc_reference_column_type": "timestamp(3)",
+            "jdbc_partition_column": "id",
+            "jdbc_partition_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "1",
+            "jdbc_upper_bound": "100",
+            "jdbc_query": "",
+            "hive_table": "data_gen_3_posgres",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "data_gen_3_full",
+            "hive_ingest_full": false,
+            "hive_schema_partition": [
+                "job"
+            ],
+            "hive_table_format": "parquet",
+            "hive_write_mode": "append"
+        },
+        {
+            "jdbc_table": "data_gen_4",
+            "jdbc_schema": "omair",
+            "jdbc_ingest_type": "delta",
+            "jdbc_reference_column": "date_maj",
+            "jdbc_reference_column_type": "timestamp(6)",
+            "jdbc_partition_column": "id",
+            "jdbc_partition_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "1",
+            "jdbc_upper_bound": "100",
+            "jdbc_query": "",
+            "hive_table": "data_gen_4_posgres",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "data_gen_4_full",
+            "hive_ingest_full": true,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "append"
+        },
+        {
+            "jdbc_table": "data_gen_4",
+            "jdbc_schema": "omair",
+            "jdbc_ingest_type": "query",
+            "jdbc_reference_column": "date_maj",
+            "jdbc_reference_column_type": "timestamp(6)",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_query": "select id, nom from omair.data_gen",
+            "hive_table": "data_gen_4_query",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "data_gen_4_query_full",
+            "hive_ingest_full": true,
+            "hive_write_mode": "overwrite",
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "jdbc_partition_column": "",
+            "jdbc_partition_column_type": "",
+            "jdbc_lower_bound": "",
+            "jdbc_upper_bound": ""
+        },
+        {
+            "_comment": "on teste le query postgre",
+            "jdbc_table": "faker_data",
+            "jdbc_schema": "omair",
+            "jdbc_ingest_type": "query",
+            "jdbc_reference_column": "",
+            "jdbc_reference_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_query": "select * from omair.faker_data",
+            "hive_table": "faker_data",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "faker_data_full",
+            "hive_ingest_full": false,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "overwrite",
+            "jdbc_partition_column": "",
+            "jdbc_partition_column_type": "",
+            "jdbc_lower_bound": "",
+            "jdbc_upper_bound": ""
+        },
+        {
+            "_comment": "on teste le delta query postgre",
+            "jdbc_table": "data_gen",
+            "jdbc_schema": "omair",
+            "jdbc_ingest_type": "delta_query",
+            "jdbc_reference_column": "date_maj",
+            "jdbc_reference_column_type": "timestamp(6)",
+            "jdbc_partition_column": "",
+            "jdbc_partition_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_lower_bound": "",
+            "jdbc_upper_bound": "",
+            "jdbc_query": "select id,nom,date_maj from omair.data_gen",
+            "hive_table": "data_gen_posgres_deltaquery",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "data_gen_full",
+            "hive_ingest_full": false,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "overwrite"
+        },
+        {
+            "_comment": "on teste le full jdbc_partition_column null en postgre",
+            "jdbc_table": "faker_data",
+            "jdbc_schema": "omair",
+            "jdbc_ingest_type": "full",
+            "jdbc_reference_column": "",
+            "jdbc_reference_column_type": "",
+            "jdbc_num_partitions": 8,
+            "jdbc_fetchsize": 10000,
+            "jdbc_query": "",
+            "hive_table": "faker_data_full_PC_NULL",
+            "hive_database": "{{db_hive_brute}}",
+            "hive_table_full": "faker_data_full",
+            "hive_ingest_full": true,
+            "hive_schema_partition": "",
+            "hive_table_format": "parquet",
+            "hive_write_mode": "overwrite",
+            "jdbc_partition_column": "",
+            "jdbc_partition_column_type": "",
+            "jdbc_lower_bound": "",
+            "jdbc_upper_bound": ""
+        }
+    ]
 }
