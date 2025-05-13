@@ -1,3 +1,4 @@
+
 Ingesteur Spark JDBC
 
 =====================================================
@@ -221,3 +222,27 @@ LAST_VALUE_FILE_FULL : /${ENV_DSN}/ep/flux_entrant/${_YCICODE}/depot/${_YCDAPPNA
 TX_EXPLOIT : /${ENV_DSN}/ep/flux_entrant/${_YCICODE}/app_db_external/db_${ENV_DSN}_${_YCICODE}_brute.db/tx_exploit
 
 NB_JDBC_PARALLEL:3
+
+Pour l'ajout de la BAM BDT, il faut installer l'extra dépendance bam-bdt de la sorte ingesteur_spark_jdbc[bam-bdt]
+
+et ajouter les paramètres suivants dans le fichier conf.ini
+
+[KAFKA_LOG]
+
+KAFKA_MODULE : bam-bdt
+
+KAFKA_LOG_BOOTSTRAP_SERVERS : ${KAFKA_BOOTSTRAP_SERVERS_LOG}
+
+SCHEMA_REGISTRY_URL : https://cp-schema-registry-${KAFKA_ENV}${SUF_SCHEMA_REGISTRY}
+
+KAFKA_USER : svckf2-${_YCICODE}-${KAFKA_ENV}-comp
+
+CERTIFICAT : /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+
+KAFKA_LOG_TOPIC : ${KAFKA_ENV}.01.db7.bam-bdt.pub.logs
+
+CREDENTIAL_PATH : jceks://hdfs/${ENV_DSN}/ep/traitement/db7/app_script/svckf2-db7-${KAFKA_ENV}-bam.password.jceks
+
+CREDENTIAL_PROVIDER_ALIAS : svckf2-db7-${KAFKA_ENV}-bam.password.alias
+
+KAFKA_LOG_ON_THREAD : no

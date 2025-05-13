@@ -1,0 +1,8 @@
+code_tiers,code_nomencli,libelle_nomenclature_clientele,libelle_court_tiers,libelle_tiers_complet,lib_tiers,lib_tierssuite,code_etatiers,code_nature_juridique,libelle_nature_juridique,code_pays_residence,libelle_pays_residence,code_pays_residence_fiscale,libelle_pays_residence_fiscale,code_type_tiers,libelle_type_tiers,date_creation_tiers,date_fermeture_tiers,siren,siret,code_nationalite,nationalite,date_deces,top_capjur,libelle_lieu_naissance,libelle_prenom,nom_naissance,code_situation_matrimoniale,libelle_situation_matrimoniale,code_pays_naissance,pays_naissance,code_qualite_politesse,libelle_qualite_politesse,date_naissance,code_dr,libelle_dr,top_dmaj,dat_horodat,score_kyc,date_fin_validite_kyc,top_valid_tiers,is_epl,dt_chargement
+
+277005,413,SECTEUR SOCIAL ET ASSOCIATIF,HABITATIONS HAUTE PROVENCE,HABITATIONS DE HAUTE PROVENCE,HABITATIONS DE HAUTE PROVENCE,NULL,A,3,PERSONNE MORALE,FRA,FRANCE,FRA,FRANCE,PM  ,PERSONNE MORALE,1990-11-11 00:00:00,NULL,006650089,00665008900037,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,DRPACA,DR PROVEN-ALPES-COTE-AZ,1,2018-09-17 14:34:13.276,MOYEN,2026-01-15 00:00:00,V,NULL,2025-04-26 04:23:07.158
+
+252137,413,SECTEUR SOCIAL ET ASSOCIATIF,SA HABITATIONS DE HAUTE PROVENCE,SA HABITATIONS DE HAUTE PROVENCE,SA HABITATIONS DE HAUTE PROVENCE,NULL,I,3,PERSONNE MORALE,FRA,FRANCE,FRA,FRANCE,PM  ,PERSONNE MORALE,2001-07-12 00:00:00,2012-07-13 12:26:59.2,006650089,00665008900037,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,2012-07-13 12:54:36.6,NULL,NULL,V,NULL,2025-04-26 04:23:07.158
+
+
+

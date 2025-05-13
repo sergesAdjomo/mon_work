@@ -1,0 +1,1 @@
+/usr/product/python/python-3.8.2/bin/python ${_YCDBIN}/pairing_venv.py ${_YCDBIN}/${_YCICODE}-0.0.3_pyspark_payload/

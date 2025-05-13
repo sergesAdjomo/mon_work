@@ -1,0 +1,90 @@
+ 
+{
+   "jdbc_tables_infos": [
+
+      {
+
+         "jdbc_table": "db_owner.DTM_DIM_OPERATION_UNITAIRE_PLAN_DE_FINANCEMENT",
+
+         "jdbc_schema": "DM_PN2_DIAP",
+
+         "jdbc_ingest_type": "full",
+
+         "jdbc_reference_column": "",
+
+         "jdbc_reference_column_type": "",
+
+         "jdbc_partition_column": "",
+
+         "jdbc_partition_column_type": "",
+
+         "jdbc_num_partitions": 8,
+
+         "jdbc_fetchsize": 10000,
+
+         "jdbc_lower_bound": "auto",
+
+         "jdbc_upper_bound": "auto",
+
+         "jdbc_query": "",
+
+         "hive_table": "DTM_DIM_OPERATION_UNITAIRE_PLAN_DE_FINANCEMENT_CLIENT",
+
+         "hive_database": "{{db_hive_brute}}",
+
+         "hive_table_full": "",
+
+         "hive_ingest_full": false,
+
+         "hive_schema_partition": null,
+
+         "hive_table_format": "parquet",
+
+         "hive_write_mode": "overwrite"
+
+      },
+      {
+
+         "jdbc_table": "db_owner.DTM_TF_PRET_JOUR",
+
+         "jdbc_schema": "DM_PN2_GEST",
+
+         "jdbc_ingest_type": "full",
+
+         "jdbc_reference_column": "",
+
+         "jdbc_reference_column_type": "",
+
+         "jdbc_partition_column": "",
+
+         "jdbc_partition_column_type": "",
+
+         "jdbc_num_partitions": 8,
+
+         "jdbc_fetchsize": 10000,
+
+         "jdbc_lower_bound": "auto",
+
+         "jdbc_upper_bound": "auto",
+
+         "jdbc_query": "",
+
+         "hive_table": "DTM_TF_PRET_JOUR_CLIENT",
+
+         "hive_database": "{{db_hive_brute}}",
+
+         "hive_table_full": "",
+
+         "hive_ingest_full": false,
+
+         "hive_schema_partition": null,
+
+         "hive_table_format": "parquet",
+
+         "hive_write_mode": "overwrite"
+
+      }
+
+   ]
+
+}

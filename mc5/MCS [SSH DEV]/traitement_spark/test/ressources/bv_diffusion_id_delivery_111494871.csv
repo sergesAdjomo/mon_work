@@ -1,0 +1,24 @@
+
+id_delivery,libelle_diffusion,identifiant_campagne,nombre_global_desinscription,niveau_priorite,nombre_global_email_delivre,nombre_global_email_qualifie,date_diffusion,date_creation,identifiant_trackingurl,type_de_click,libelle_url,source_url,sdeliverycode,sinternalname,dt_chargement
+
+111494871,Diffusion Newsletter Ciclade PARTICULIERS 1 NOV 2024,111494868,18,p3,4213,4228,2024-11-20 00:00:00,2024-10-30 00:00:00,2635077,1,cliquez-ici,https://m.infos.banquedesterritoires.fr/nl/jsp/m.jsp?c=<%=escapeUrl(cryptString(message.deliveryPartId.toString(16)+'|'+message.id.toString(16)))%>,NULL,DIF_Ciclade-PARTICLUIERS-1_NOV_2024,2025-04-04 02:53:33.006
+
+111494871,Diffusion Newsletter Ciclade PARTICULIERS 1 NOV 2024,111494868,18,p3,4213,4228,2024-11-20 00:00:00,2024-10-30 00:00:00,2635082,1,NULL,https://www.instagram.com/BanqueDesTerr/,NULL,DIF_Ciclade-PARTICLUIERS-1_NOV_2024,2025-04-04 02:53:33.006
+
+111494871,Diffusion Newsletter Ciclade PARTICULIERS 1 NOV 2024,111494868,18,p3,4213,4228,2024-11-20 00:00:00,2024-10-30 00:00:00,2635081,1,NULL,https://twitter.com/BanqueDesTerr,NULL,DIF_Ciclade-PARTICLUIERS-1_NOV_2024,2025-04-04 02:53:33.006
+
+111494871,Diffusion Newsletter Ciclade PARTICULIERS 1 NOV 2024,111494868,18,p3,4213,4228,2024-11-20 00:00:00,2024-10-30 00:00:00,2635083,1,Suivez ce lien d’opposition,https://digital.banquedesterritoires.fr/webApp/cdcConsentTracking?id=<%=escape(recipient.cryptedId)%>,NULL,DIF_Ciclade-PARTICLUIERS-1_NOV_2024,2025-04-04 02:53:33.006
+
+111494871,Diffusion Newsletter Ciclade PARTICULIERS 1 NOV 2024,111494868,18,p3,4213,4228,2024-11-20 00:00:00,2024-10-30 00:00:00,2635079,1,NULL,https://www.banquedesterritoires.fr/?mtm_campaign=footer-emailing&mtm_source=COM&mtm_medium=email&mtm_content=banquedesterritoires.fr&mtm_cid=Logo-footer-emailing,NULL,DIF_Ciclade-PARTICLUIERS-1_NOV_2024,2025-04-04 02:53:33.006
+
+111494871,Diffusion Newsletter Ciclade PARTICULIERS 1 NOV 2024,111494868,18,p3,4213,4228,2024-11-20 00:00:00,2024-10-30 00:00:00,2635078,1,accéder à l'espace personnel,https://ciclade.caissedesdepots.fr/monespace/#/service/authentification,NULL,DIF_Ciclade-PARTICLUIERS-1_NOV_2024,2025-04-04 02:53:33.006
+
+111494871,Diffusion Newsletter Ciclade PARTICULIERS 1 NOV 2024,111494868,18,p3,4213,4228,2024-11-20 00:00:00,2024-10-30 00:00:00,2635080,1,Linkedin la banque des territoires,https://www.linkedin.com/showcase/banque-des-territoires-par-la-caisse-des-depots/,NULL,DIF_Ciclade-PARTICLUIERS-1_NOV_2024,2025-04-04 02:53:33.006
+
+111494871,Diffusion Newsletter Ciclade PARTICULIERS 1 NOV 2024,111494868,18,p3,4213,4228,2024-11-20 00:00:00,2024-10-30 00:00:00,2635084,1,Politique de protection des données à caractère personnel,https://www.banquedesterritoires.fr/donnees-personnelles,NULL,DIF_Ciclade-PARTICLUIERS-1_NOV_2024,2025-04-04 02:53:33.006
+
+111494871,Diffusion Newsletter Ciclade PARTICULIERS 1 NOV 2024,111494868,18,p3,4213,4228,2024-11-20 00:00:00,2024-10-30 00:00:00,2635085,1,Nous contacter,https://ciclade.caissedesdepots.fr/nous-contacter,NULL,DIF_Ciclade-PARTICLUIERS-1_NOV_2024,2025-04-04 02:53:33.006
+
+111494871,Diffusion Newsletter Ciclade PARTICULIERS 1 NOV 2024,111494868,18,p3,4213,4228,2024-11-20 00:00:00,2024-10-30 00:00:00,2635086,3,Suivez ce lien de désabonnement,https://digital.banquedesterritoires.fr/webApp/cdcUnsub?id=<%=escape(recipient.cryptedId)%>,NULL,DIF_Ciclade-PARTICLUIERS-1_NOV_2024,2025-04-04 02:53:33.006
+
+

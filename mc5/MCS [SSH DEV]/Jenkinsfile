@@ -1,0 +1,218 @@
+ 
+#!groovy
+@Library(value = 'icdc-jenkins-shared-library', changelog = false) _
+//
+// ===== Variables générales
+//
+// pythonVersion => Version python : '3.7' ou '3.8' ou '3.9'
+String pythonVersion = '3.8'
+//
+// ===== Commutateurs
+// Doit-on lancer la qualimétrie ? on lance sopnar ou pas ? 
+Boolean isQualimetryEnabled = false
+// Doit-on upload au sas
+Boolean isSasUploadEnabled = false
+// doit-on pousser vers Fusion ?
+Boolean isFusionPlugginEnabled = true
+// doit-on pousser vers artifactory
+Boolean isArtifactoryPlugginEnabled = false
+// Si on pousse sur artifactory, est-ce en tant que snapshot ?
+Boolean isSnapshotRelease = false
+//
+// ===== Contruction du package
+// buildTool => Format du livrable final.
+//      build_batch : un livrable fusion pour les cibles batch
+//      build_arcueil_batch : Batch aux normes DPI Arcueil
+//      build_bordeaux_batch : Batch aux normes DPI Bordeaux
+//      build_ntiers_wsgi : un livrable fusion pour les cibles WSGI (service web synchrone pour NTiers)
+//      build_ntiers_asgi : un livrable fusion pour les cibles ASGI (service web asynchrone pour NTiers)
+//      build_ntiers_simple_service : un livrable DPI Ntiers simple
+//      build_bd_pyspark : un livrable pour exécution sur le plateau Big Data via Spark et Yarn
+String buildTool = 'build_bd_pyspark'
+// Permet de forcer le chemin vers une version de python (notamment pour pyspark/BigData)
+String forcedPythonPath = ''
+// Permet d'inclure le répertoire parm dans la livraison si activé.
+// Par défaut, le répertoire parm n'est pas livré pour ne pas écraser d'éventuelles modifications par DPI.
+Boolean isIncludeParm = true
+// Choix de la version du contructeur icdc-packaging
+String icdcPackagingVersion = 'icdc-packaging<4'
+// Doit on choisi la version pre release du contructeur icdc-packaging ?
+Boolean isIcdcPackagingPreRelease = false
+//
+//
+// ===== Déploiement sur le SAS
+// Chemin vers lequel sera déposé l'archive. Le répertoire sera créé si inexistant.
+// sasPathBase = '/dsasdeidpi/WS5-SPS-SUPERVISION-ELK-4601/temp'
+//String sasPathBase = '/dsasdeidpi/MA7-USINE-LOGICIELLE-DEI-3173/vision-xe3'
+String sasPathBase = '/dsasdeidpi/MA7-USINE-LOGICIELLE-DEI-3173/bigdata-datamartclient-mc5/bigdata-datamartclient-mc5-batch'
+// ------- A decommenter : String sasPathBase ='/dsasdeidpi/MA7-USINE-LOGICIELLE-DEI-3173/bigdata-appli_blanche-xx1'
+//
+// ===== Fusion : Documentation http://bitbucket.serv.cdc.fr/projects/MA7PUB/repos/icdc-ci-cd-shared-libs/browse/README.md#libs_fusion
+// permet de zaper le formulaire de saisie manuelle des versions
+Boolean skipUserPrompt  = true
+// applicationName= 'jfrog-ma7'
+String applicationName = 'bigdata-datamartclient-mc5-batch'
+// projectName= 'jfrog'
+String projectName = 'bigdata-datamartclient-mc5'
+// resourcePath= 'dist/artifacts'
+String resourcePath = 'dist' 
+// resourceType= 'TAR'
+String resourceType = 'TARGZ'
+// packageType= 'WEB-STATIC'
+String packageType = 'BATCH'
+// environmentCode= 'dv'
+String environmentCode = 'dv'
+// deploymentMode = 'promote'
+String deploymentMode = 'deploy'
+//
+pipeline {
+    //when {expression{(env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'prex' || env.BRANCH_NAME == 'dev') } }
+    agent {
+        kubernetes {
+            label 'python-packaging'
+            defaultContainer 'jnlp'
+            yaml libraryResource('podTemplates/python/python-ci-icdc-legacy.yaml')
+        }
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        skipDefaultCheckout true
+    }
+    stages {
+        stage('Rappel des variables') {
+            steps {
+                echo "applicationName=${applicationName}"
+                echo "buildTool=${buildTool}"
+                echo "deploymentMode=${deploymentMode}"
+                echo "environmentCode=${environmentCode}"
+                echo "forcedPythonPath=${forcedPythonPath}"
+                echo "isIncludeParm=${isIncludeParm}"
+                echo "isArtifactoryPlugginEnabled=${isArtifactoryPlugginEnabled}"
+                echo "isFusionPlugginEnabled=${isFusionPlugginEnabled}"
+                echo "isQualimetryEnabled=${isQualimetryEnabled}"
+                echo "isSasUploadEnabled=${isSasUploadEnabled}"
+                echo "packageType=${packageType}"
+                echo "projectName=${projectName}"
+                echo "pythonVersion=${pythonVersion}"
+                echo "resourcePath=${resourcePath}"
+                echo "resourceType=${resourceType}"
+                echo "sasPathBase=${sasPathBase}"
+                echo "skipUserPrompt=${skipUserPrompt}"
+            }
+        }
+        stage('Récupération du code') {
+            steps {
+                script {
+                    dir('projet') { checkout scm }
+                }
+            }
+        }
+        stage('Récupération de variables projet') {
+            steps {
+                container('python') {
+                    script {
+                        projet = getJobBaseNamePipelineMultibranch()
+                        echo "projet=${projet}"
+                        sasPath = "${sasPathBase}/${projet}"
+                        echo "sasPath=${sasPath}"
+                        packageVersion = pythonReturnPackageVersion(pythonVersion: "${pythonVersion}")
+                        echo "packageVersion=${packageVersion}"
+                        packageName = pythonReturnPackageName(pythonVersion: "${pythonVersion}")
+                        echo "packageName=${packageName}"
+                    }
+                }
+            }
+        }
+        stage('Qualimétrie') {
+            when { expression { isQualimetryEnabled == true } }
+            steps {
+                container('python') {
+                    script {
+                        pythonLintTestCoverage(pythonVersion: "${pythonVersion}")
+                        pythonPrepareSonar()
+                        sh 'cat  sonar-project.properties'
+                        sh "sed -i '/^sonar.projectKey=/c\\sonar.projectKey=mc5' sonar-project.properties"
+                        sh 'cat  sonar-project.properties'
+                    }
+                }
+                container('sonar') {
+                    sonarScanner(circuitBreaker: false)
+                }
+            }
+        }
+        stage('Construction') {
+            // when { expression { isArtifactoryPlugginEnabled == false } }
+            steps {
+                container('python') {
+                    script {
+                        pythonBuildTool(
+                                buildTool: buildTool,
+                          		isIncludeParm: isIncludeParm,
+                                pythonVersion: pythonVersion,
+                                forcedPythonPath: forcedPythonPath,
+                                icdcPackagingVersion: icdcPackagingVersion,
+                                isIcdcPackagingPreRelease: isIcdcPackagingPreRelease
+                            )
+                        //pythonlintTestCoverage(pythonVersion:"${pythonVersion}")
+                    }
+                }
+            }
+        }
+        // stage('Workaround') {
+        //     steps {
+        //        container('python') {
+        //             script {
+        //                 pythonWorkaround(
+        //                     packageName : packageName,
+        //                     packageVersion : packageVersion,
+        //                     pythonVersionMinor: '3.7',
+        //                     pythonVersionPatch: '6'
+        //                 )
+        //             }
+        //         }
+        //     }
+        // }
+        stage('DepotSAS') {
+            when { expression { isSasUploadEnabled } }
+            steps {
+                container('python') {
+                    script {
+                        pythonUploadToSas(sasPath)
+                    }
+                }
+            }
+        }
+        stage('Déploiement fusion') {
+			when {expression{ isFusionPlugginEnabled && (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'prex' || env.BRANCH_NAME == 'dev') } }
+            steps {
+                container('python') {
+                    fusionDelivery(
+                        applicationName: applicationName,
+                        environmentCode: environmentCode,
+                        packageType: packageType,
+                        projectName: projectName,
+                        resourcePath: resourcePath,
+                        resourceType: resourceType,
+                        skipUserPrompt: skipUserPrompt,
+                        deploymentMode: deploymentMode
+                    )
+                }
+            }
+        }
+        stage('Publication Artifactory') {
+            when { expression { isArtifactoryPlugginEnabled == true } }
+            steps {
+                container('python') {
+                    script {
+                        pythonPaquetPip("${pythonVersion}")
+                        pythonUploadToArtifactory(
+                            packageName: packageName,
+                            packageVersion: packageVersion,
+                            isSnapshotRelease: isSnapshotRelease
+                        )
+                    }
+                }
+            }
+        }
+    }
+}

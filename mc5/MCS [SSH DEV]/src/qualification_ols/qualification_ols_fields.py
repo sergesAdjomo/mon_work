@@ -1,0 +1,20 @@
+ 
+FIELDS = {
+    "siren": "siren",
+    "siret": "siret",
+    "denom_unite_legale": "denomination_unite_legale",
+    "sous_cat": "sous_categorie",
+    "adr_code_postal": "adr_code_postal",
+    "lib_bureau_distrib": "libelle_bureau_distribution",
+    "code_tiers": "code_tiers",
+    "is_tete_groupe": "is_tete_de_groupe",
+    "code_departement": "code_departement",
+    "code_region": "code_region",
+    "lib_clair_region": "libelleclair_region",
+    "is_ols": "is_ols",
+    "etat_admin": "etat_administratif",
+    "etab_siege": "etablissement_siege",
+    "code_etatiers": "code_etatiers",
+    "dat_horodat": "dat_horodat",
+    "siret_par_date": "siret_par_date",
+}

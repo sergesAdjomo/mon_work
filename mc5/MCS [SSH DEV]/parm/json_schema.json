@@ -1,0 +1,43 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"title": "JSON SCHEMA de demonstration",
+	"description":"Ceci est un json schema pour valider le fichier d'import avec sqoop",
+	
+	"type":"object",
+	"required": ["typeSource","databases"],
+	"properties":{"typeSource":{"type":"string","minLength":1},
+				  "jdbc":{"type":"string"},
+				  "databases":{"type":"array","minLength": 1,"items":{ "$ref": "#/definitions/database" }}
+	},
+	 "definitions":{
+		"database":{"type":"object",
+					"required": [
+						  "name","codeAppli","tables"
+						],
+		"properties": {
+			   "name": {
+				   "type": "string"
+			   },
+			   "codeAppli":{"type":"string"},	   
+			   "tables":{"type":"array","minLength":0,"items":{ "$ref": "#/definitions/table" }}
+				}
+				 },
+		"table":{"type":"object",
+		"required": ["tableHive","importType","delimiteur","pathStagingHDFS","partition","mapper"],
+				 "properties":{"dbHive":{"type":"string"},
+							   "tableHive":{"type":"string"},
+							   "importType":{"type":"string","minLength": 1},
+							   "refType":{"type":"string"},
+							   "nomColonneRef":{"type":"string"},
+							   "delimiteur":{"type":"string"},
+								"partition":{"type":"boolean"},
+								"partitionStandard":{"type":"boolean"},                        
+								"champPartition":{"type":"string"},
+							   "champPartition":{"type":"string"},
+							   "operationPartition": {"type":"string"},
+							   "args":{"type":"string"},
+							   "pathStagingHDFS":{"type":"string"},
+								"mapper":{"type":"number"}
+						}
+						}}		
+	}
