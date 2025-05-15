@@ -1,4 +1,3 @@
- 
 FIELDS = {
     "siren": "siren",
     "siret": "siret",

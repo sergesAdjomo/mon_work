@@ -1,4 +1,3 @@
- 
 from pyspark.sql import DataFrame, Window
 from pyspark.sql.functions import col, row_number, substring, when
 from traitement_spark.code.settings import Settings
