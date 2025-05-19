@@ -1,12 +1,14 @@
 # qualification_ols_star_model/transformations/dim_localisation.py
-from pyspark.sql.functions import col, regexp_replace, when, lit, coalesce
+from pyspark.sql.functions import col, substring, coalesce, lit, when, desc
+from pyspark.sql import Window
+import pyspark.sql.functions as F
 
 from qualification_ols_star_model.constants.fields import FIELDS
 
 
 def prepare_dim_localisation(dim_pm_bdt, bv_coord_postales, bv_departement, bv_region):
     """
-    Prépare la dimension LOCALISATION avec des jointures améliorées
+    Prépare la dimension LOCALISATION selon les spécifications du modèle en étoile.
     
     Args:
         dim_pm_bdt: DataFrame de la dimension PM_BDT
@@ -15,83 +17,65 @@ def prepare_dim_localisation(dim_pm_bdt, bv_coord_postales, bv_departement, bv_r
         bv_region: DataFrame des régions
         
     Returns:
-        DataFrame: Dimension DIM_LOCALISATION enrichie
+        DataFrame: Dimension DIM_LOCALISATION conforme au modèle
     """
-    # Amélioration 1: Extraire le code département du code postal de manière plus robuste
-    # Prendre en compte les cas spéciaux comme la Corse (2A, 2B) et les DOM-TOM
-    coordonnees_postales_enrichies = bv_coord_postales.withColumn(
-        "code_dept_extrait",
-        when(
-            regexp_replace(col(FIELDS.get("adr_code_postal")), "^(\\d{2}).*", "$1") == "20",
-            when(
-                col(FIELDS.get("adr_code_postal")) < "20200",
-                lit("2A")
-            ).otherwise(lit("2B"))
-        ).otherwise(regexp_replace(col(FIELDS.get("adr_code_postal")), "^(\\d{2}).*", "$1"))
+    # 1. Préparation des coordonnées postales - prendre la plus récente par code_tiers
+    window_spec = Window.partitionBy(FIELDS.get("code_tiers")).orderBy(desc(FIELDS.get("dat_horodat")))
+    
+    coord_postales_latest = bv_coord_postales.withColumn(
+        "row_num", 
+        F.row_number().over(window_spec)
+    ).filter(col("row_num") == 1).drop("row_num")
+    
+    # 2. Extraction du code département à partir du code postal
+    coord_postales_with_dept = coord_postales_latest.withColumn(
+        "code_dept", 
+        substring(col(FIELDS.get("adr_code_postal")), 1, 2)
     )
     
-    # Tri des coordonnées postales par date pour prendre la plus récente en cas de doublons
-    coordonnees_postales_les_plus_recentes = coordonnees_postales_enrichies\
-        .orderBy(col("dat_horodat").desc())\
-        .dropDuplicates([FIELDS.get("code_tiers")])
-    
-    # Joindre coordonnées postales avec département et région
-    localisation_base = (
-        coordonnees_postales_les_plus_recentes
-        .join(
-            bv_departement,
-            on=col("code_dept_extrait") == col(FIELDS.get("code_departement")),
-            how="left"
-        )
-        .join(
-            bv_region,
-            on=["code_region"],
-            how="left"
-        )
+    # 3. Jointure avec le département
+    loc_with_dept = coord_postales_with_dept.join(
+        bv_departement,
+        col("code_dept") == col(FIELDS.get("code_departement")),
+        "left"
     )
-
-    # Sélectionner les colonnes pertinentes avec des transformations pour standardiser les données
-    localisation_base = localisation_base.select(
+    
+    # 4. Jointure avec la région
+    loc_with_region = loc_with_dept.join(
+        bv_region,
+        on=FIELDS.get("code_region"),
+        how="left"
+    )
+    
+    # 5. Sélection des colonnes pour la dimension finale selon l'image
+    localisation_df = loc_with_region.select(
         FIELDS.get("code_tiers"),
         FIELDS.get("adr_code_postal"),
-        FIELDS.get("code_departement"),
-        # Standardisation et nettoyage des valeurs
-        coalesce(col("libelle_bureau_distribution"), lit("Non défini")).alias(FIELDS.get("ville")),
-        # S'assurer que le nombre d'habitants est un entier
-        coalesce(col("nbre_habitant").cast("integer"), lit(0)).alias(FIELDS.get("nbre_habitant")),
-        coalesce(col("libelleclair_region"), lit("Non défini")).alias(FIELDS.get("region"))
+        col(FIELDS.get("code_departement")).alias("code_Departement"),
+        col(FIELDS.get("lib_bureau_distrib")).alias("Ville"),
+        col(FIELDS.get("lib_clair_region")).alias("Region")
     )
     
-    # Ajouter d'autres attributs géographiques potentiellement utiles
-    localisation_base = localisation_base.withColumn(
-        "zone_geo", 
-        when(col(FIELDS.get("code_departement")).isin("75", "92", "93", "94"), lit("Ile de France"))
-        .when(col(FIELDS.get("code_departement")).isin("13", "06", "83"), lit("Sud-Est"))
-        .when(col(FIELDS.get("code_departement")).isin("33", "31", "64"), lit("Sud-Ouest"))
-        .when(col(FIELDS.get("code_departement")).isin("59", "62"), lit("Nord"))
-        .otherwise(lit("Autres"))
-    )
-
-    # Joindre avec PM_BDT pour obtenir le SIREN et créer la clé primaire annee_mois_SIREN
-    dim_localisation = (
-        dim_pm_bdt
-        .select(
-            FIELDS.get("annee_mois_siren"),  # Clé primaire pour la jointure avec la table de faits
-            FIELDS.get("annee_mois"),        # Clé étrangère pour DIM_TEMPS
-            FIELDS.get("siren"),             # SIREN pour identification de l'entreprise
-            FIELDS.get("code_tiers")         # Code Tiers pour jointure avec localisation
-        )
-        .join(
-            localisation_base,
-            on=[FIELDS.get("code_tiers")],
-            how="left"
-        )
+    # 6. Jointure avec dim_pm_bdt pour obtenir les clés du modèle en étoile
+    dim_localisation = dim_pm_bdt.select(
+        "annee_mois_SIREN",
+        "annee_mois",
+        "SIREN",
+        FIELDS.get("code_tiers")
+    ).join(
+        localisation_df,
+        on=FIELDS.get("code_tiers"),
+        how="left"
     )
     
-    # Enrichissement avec des métriques géographiques supplémentaires
-    dim_localisation = dim_localisation.withColumn(
-        "densite_population", 
-        when(col(FIELDS.get("nbre_habitant")) > 0, lit(1)).otherwise(lit(0))
+    # 7. Sélection finale des colonnes pour la dimension selon l'image
+    dim_localisation = dim_localisation.select(
+        col("annee_mois_SIREN"),
+        col("annee_mois"),
+        col(FIELDS.get("adr_code_postal")),
+        col("code_Departement"),
+        col("Ville"),
+        col("Region")
     )
-
+    
     return dim_localisation

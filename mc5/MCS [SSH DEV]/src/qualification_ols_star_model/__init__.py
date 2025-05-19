@@ -6,6 +6,7 @@ Ce package implémente un modèle en étoile pour les données qualification_ols
 - 1 table de faits (FT_qualif_donnees_usage)
 """
 
-from .qualification_ols_main import execute_star_model_pipeline
+__all__ = ['TraitementQualificationOLSStarModel']
 
-__all__ = ['execute_star_model_pipeline']
+# Pour faciliter l'import direct
+from qualification_ols_star_model.traitement import TraitementQualificationOLSStarModel

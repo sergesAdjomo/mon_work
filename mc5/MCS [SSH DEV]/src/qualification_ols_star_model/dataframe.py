@@ -133,71 +133,104 @@ class TraitementQualificationOLSStarModelDataFrame(CommonUtils):
         return self
     
     def _create_empty_dim_pm_bdt(self):
-        """Crée un DataFrame DIM_PM_BDT vide mais avec la structure correcte."""
-        from pyspark.sql.types import StructType, StructField, StringType
+        """Crée un DataFrame DIM_PM_BDT vide mais avec la structure correcte via SQL."""
+        query = """
+        SELECT 
+            CAST(NULL AS STRING) AS SIREN,
+            CAST(NULL AS STRING) AS annee,
+            CAST(NULL AS STRING) AS Raison_sociale,
+            CAST(NULL AS STRING) AS Sous_categorie,
+            CAST(NULL AS STRING) AS Tete_de_groupe,
+            CAST(NULL AS STRING) AS annee_mois,
+            CAST(NULL AS STRING) AS annee_mois_SIREN,
+            CAST(NULL AS STRING) AS code_tiers
+        WHERE 1=0
+        """
         
-        schema = StructType([
-            StructField("SIREN", StringType(), True),
-            StructField("annee", StringType(), True),
-            StructField("Raison_sociale", StringType(), True),
-            StructField("Sous_categorie", StringType(), True),
-            StructField("Tete_de_groupe", StringType(), True),
-            StructField("annee_mois", StringType(), True),
-            StructField("annee_mois_SIREN", StringType(), True),
-            StructField("code_tiers", StringType(), True)
-        ])
-        
-        return self.spark.createDataFrame([], schema)
+        try:
+            return self.hive_utils.hive_execute_query(query)
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la création d'un DataFrame DIM_PM_BDT vide via SQL : {e}")
+            self.logger.error(traceback.format_exc())
+            return None
     
     def _create_empty_dim_temps(self):
-        """Crée un DataFrame DIM_TEMPS vide mais avec la structure correcte."""
-        from pyspark.sql.types import StructType, StructField, StringType
+        """Crée un DataFrame DIM_TEMPS avec la date courante via SQL."""
         from datetime import datetime
         
-        schema = StructType([
-            StructField("annee_mois", StringType(), True),
-            StructField("annee", StringType(), True),
-            StructField("mois", StringType(), True)
-        ])
-        
-        # Au minimum, créer une ligne avec les données actuelles
+        # Obtenir la date actuelle pour créer au moins une ligne
         current_date = datetime.now()
         current_year = current_date.year
         current_month = current_date.month
         annee_mois = f"{current_year}_{current_month:02d}"
         
-        data = [(annee_mois, str(current_year), str(current_month))]
-        return self.spark.createDataFrame(data, schema)
+        query = f"""
+        SELECT 
+            '{annee_mois}' AS annee_mois,
+            '{current_year}' AS annee,
+            '{current_month:02d}' AS mois
+        """
+        
+        try:
+            return self.hive_utils.hive_execute_query(query)
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la création d'un DataFrame DIM_TEMPS via SQL : {e}")
+            self.logger.error(traceback.format_exc())
+            
+            # En cas d'échec, essayer une requête plus simple pour un DataFrame vide
+            fallback_query = """
+            SELECT 
+                CAST(NULL AS STRING) AS annee_mois,
+                CAST(NULL AS STRING) AS annee,
+                CAST(NULL AS STRING) AS mois
+            WHERE 1=0
+            """
+            
+            try:
+                return self.hive_utils.hive_execute_query(fallback_query)
+            except Exception as ex:
+                self.logger.error(f"Échec de la création d'un DataFrame DIM_TEMPS vide : {ex}")
+                return None
     
     def _create_empty_dim_localisation(self):
-        """Crée un DataFrame DIM_LOCALISATION vide mais avec la structure correcte."""
-        from pyspark.sql.types import StructType, StructField, StringType
+        """Crée un DataFrame DIM_LOCALISATION vide mais avec la structure correcte via SQL."""
+        query = """
+        SELECT 
+            CAST(NULL AS STRING) AS annee_mois_SIREN,
+            CAST(NULL AS STRING) AS annee_mois,
+            CAST(NULL AS STRING) AS adr_code_postal,
+            CAST(NULL AS STRING) AS code_Departement,
+            CAST(NULL AS STRING) AS Ville,
+            CAST(NULL AS STRING) AS Region
+        WHERE 1=0
+        """
         
-        schema = StructType([
-            StructField("annee_mois_SIREN", StringType(), True),
-            StructField("annee_mois", StringType(), True),
-            StructField("adr_code_postal", StringType(), True),
-            StructField("code_Departement", StringType(), True),
-            StructField("Ville", StringType(), True),
-            StructField("Region", StringType(), True)
-        ])
-        
-        return self.spark.createDataFrame([], schema)
+        try:
+            return self.hive_utils.hive_execute_query(query)
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la création d'un DataFrame DIM_LOCALISATION vide via SQL : {e}")
+            self.logger.error(traceback.format_exc())
+            return None
     
     def _create_empty_ft_qualif_donnees_usage(self):
-        """Crée un DataFrame FT_qualif_donnees_usage vide mais avec la structure correcte."""
-        from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType
+        """Crée un DataFrame FT_qualif_donnees_usage vide mais avec la structure correcte via SQL."""
+        query = """
+        SELECT 
+            CAST(NULL AS STRING) AS annee_mois_SIREN,
+            CAST(NULL AS STRING) AS annee_mois,
+            CAST(NULL AS STRING) AS SIREN,
+            CAST(NULL AS INT) AS nb_de_tiers,
+            CAST(NULL AS DOUBLE) AS chiffre_d_affaire_moyen,
+            CAST(NULL AS DOUBLE) AS montant_signe
+        WHERE 1=0
+        """
         
-        schema = StructType([
-            StructField("annee_mois_SIREN", StringType(), True),
-            StructField("annee_mois", StringType(), True),
-            StructField("SIREN", StringType(), True),
-            StructField("nb_de_tiers", IntegerType(), True),
-            StructField("chiffre_d_affaire_moyen", DoubleType(), True),
-            StructField("montant_signe", DoubleType(), True)
-        ])
-        
-        return self.spark.createDataFrame([], schema)
+        try:
+            return self.hive_utils.hive_execute_query(query)
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la création d'un DataFrame FT_qualif_donnees_usage vide via SQL : {e}")
+            self.logger.error(traceback.format_exc())
+            return None
     
     def _validate_source_data(self):
         """
