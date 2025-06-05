@@ -74,7 +74,6 @@ def prepare_dim_localisation(dim_pm_bdt, bv_coord_postales, bv_departement, bv_r
     # 7. Sélection finale des colonnes pour la dimension selon l'ordre exact fourni par l'utilisateur
     dim_localisation = dim_localisation.select(
         col("annee_mois_SIREN"),  # PK
-        col(FIELDS.get("code_tiers")),  # FK1 
         col("annee_mois"),        # FK1 (partie temporelle)
         col(FIELDS.get("adr_code_postal")),  # Code postal (string)
         col("code_Departement"),  # Code département (int)
