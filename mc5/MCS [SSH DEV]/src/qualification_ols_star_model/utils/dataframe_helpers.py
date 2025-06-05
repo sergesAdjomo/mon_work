@@ -37,7 +37,7 @@ def join_star_model(ft_qualif_donnees_usage, dim_pm_bdt, dim_temps, dim_localisa
         pm_bdt_cols = dim_pm_bdt.select(
             col("annee_mois_SIREN").alias("pm_annee_mois_SIREN"),
             col("denomination_unite_legale").alias("pm_Raison_sociale"),
-            col("sous_categorie").alias("pm_Sous_categorie"),
+            col("categorie_N1").alias("pm_Sous_categorie"),
             col("tete_de_groupe").alias("pm_Tete_de_groupe")
         )
         
