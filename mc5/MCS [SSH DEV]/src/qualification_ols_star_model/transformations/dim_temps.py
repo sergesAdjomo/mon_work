@@ -143,6 +143,8 @@ def prepare_dim_temps(spark, date_ctrlm):
             try:
                 print("Tentative de création d'un DataFrame via la session SparkSession globale")
                 spark_session = SparkSession.builder.getOrCreate()
+                # Créer le DataFrame avec les colonnes dans l'ordre exact fourni par l'utilisateur
+                # PK annee_mois (string), FK1-annee, mois
                 return spark_session.createDataFrame(
                     [(annee_mois, annee, mois)],
                     ["annee_mois", "annee", "mois"]

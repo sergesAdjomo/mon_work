@@ -36,9 +36,9 @@ def join_star_model(ft_qualif_donnees_usage, dim_pm_bdt, dim_temps, dim_localisa
         # Utiliser des noms uniques pour les champs des tables de dimensions
         pm_bdt_cols = dim_pm_bdt.select(
             col("annee_mois_SIREN").alias("pm_annee_mois_SIREN"),
-            col("Raison_sociale").alias("pm_Raison_sociale"),
-            col("Sous_categorie").alias("pm_Sous_categorie"),
-            col("Tete_de_groupe").alias("pm_Tete_de_groupe")
+            col("denomination_unite_legale").alias("pm_Raison_sociale"),
+            col("sous_categorie").alias("pm_Sous_categorie"),
+            col("tete_de_groupe").alias("pm_Tete_de_groupe")
         )
         
         # Utiliser des conditions de jointure explicites plutôt que "on" 

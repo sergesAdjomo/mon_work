@@ -57,10 +57,10 @@ def prepare_dim_localisation(dim_pm_bdt, bv_coord_postales, bv_departement, bv_r
     )
     
     # 6. Jointure avec dim_pm_bdt pour obtenir les clés du modèle en étoile
+    # Sélection des colonnes disponibles dans dim_pm_bdt sans référencer SIREN qui n'existe plus
     dim_localisation = dim_pm_bdt.select(
         "annee_mois_SIREN",
         "annee_mois",
-        "SIREN",
         FIELDS.get("code_tiers")
     ).join(
         localisation_df,
@@ -68,14 +68,19 @@ def prepare_dim_localisation(dim_pm_bdt, bv_coord_postales, bv_departement, bv_r
         how="left"
     )
     
-    # 7. Sélection finale des colonnes pour la dimension selon l'image
+    # Ajouter une colonne nbre_habitant qui n'est pas présente dans les données sources
+    dim_localisation = dim_localisation.withColumn("nbre_habitant", lit(None).cast("int"))
+    
+    # 7. Sélection finale des colonnes pour la dimension selon l'ordre exact fourni par l'utilisateur
     dim_localisation = dim_localisation.select(
-        col("annee_mois_SIREN"),
-        col("annee_mois"),
-        col(FIELDS.get("adr_code_postal")),
-        col("code_Departement"),
-        col("Ville"),
-        col("Region")
+        col("annee_mois_SIREN"),  # PK
+        col(FIELDS.get("code_tiers")),  # FK1 
+        col("annee_mois"),        # FK1 (partie temporelle)
+        col(FIELDS.get("adr_code_postal")),  # Code postal (string)
+        col("code_Departement"),  # Code département (int)
+        col("Ville"),            # Nom de la ville (string)
+        col("nbre_habitant"),    # Nombre d'habitants (int)
+        col("Region")            # Nom de la région (string)
     )
     
     return dim_localisation

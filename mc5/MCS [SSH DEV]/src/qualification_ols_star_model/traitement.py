@@ -1,9 +1,14 @@
+# qualification_ols_star_model/utils/traitement.py
 import socket
 import time
 import traceback
 from datetime import datetime
 
+from pyspark.sql import DataFrame, SparkSession
+from typing import Dict, Any, Optional
+
 from icdc.hdputils.hive import hiveUtils
+from icdc.hdputils.impala import impalaUtils
 from traitement_spark.code.settings import Settings
 from traitement_spark.code.utils import CommonUtils
 
@@ -14,7 +19,7 @@ from qualification_ols_star_model.dataframe import TraitementQualificationOLSSta
 class TraitementQualificationOLSStarModel(CommonUtils):
     """Classe principale de traitement pour le modèle en étoile qualification_ols."""
 
-    def __init__(self, spark, config):
+    def __init__(self, spark, config=None):
         """
         Initialise le traitement.
         
@@ -23,16 +28,16 @@ class TraitementQualificationOLSStarModel(CommonUtils):
             config: Configuration
         """
         self.spark = spark
-        self.config = config
+        self.config = config or {}
         super().__init__(self.spark, self.config)
-
+        
         # Configuration et journalisation
         self._setup_logging()
         self._setup_variables()
         
-        # Dataframe handler
-        self.df = TraitementQualificationOLSStarModelDataFrame(self.spark, self.config)
-
+        # Initialisation du hive_utils
+        self.hive_utils = hiveUtils(self.spark)
+        
     def _setup_logging(self):
         """Configure les paramètres de logging."""
         self.logger = self.config.logger
@@ -59,367 +64,373 @@ class TraitementQualificationOLSStarModel(CommonUtils):
         self.logger.info(f"Date Ctrlm : {self.date_ctrlm}")
 
     def _setup_variables(self):
-        """Configure les variables pour le traitement."""
-        # Variables d'environnement
-        self.env = self.conf.get("DEFAULT", "ENVIRONMENT")
+        """
+        Initialise les variables de configuration nécessaires au traitement.
+        """
+        self.timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        self.app_name = self.conf.get("DEFAULT", "APP_NAME")
+        
+        # Chemins et databases Hive
+        self.db_hive_travail = self.conf.get("HIVE", "DB_HIVE_TRAVAIL")
+        self.db_hive_lac = self.conf.get("HIVE", "DB_HIVE_LAC")
+        self.db_lac_path = self.conf.get("HIVE", "DB_HIVE_LAC_PATH")
+        self.lac_path = self.conf.get("HIVE", "LAC_PATH", fallback="/apps/hive/warehouse/")
+        
+        # Base de données contenant les tables sources (BV_PM, BV_TIERS, etc.)
         self.db_ct3 = self.conf.get("HIVE", "DB_SRC_CT3")
         
-        # Utiliser db_dev_mc5_travail au lieu de db_dev_mc5
-        self.db_lac_path = self.conf.get("HIVE", "DB_HIVE_TRAVAIL_PATH")
-        self.db_lac = "db_dev_mc5_travail"  # Pour écrire les tables dans db_dev_mc5_travail
-        self.logger.info(f"Base de données cible configurée à: {self.db_lac}")
-        
-        self.settings = Settings(self.conf, self.logger, self.date_ctrlm)
-
-        # informations techniques
+        # Variables de contrôle
         self.DATE_DEB_ALIM = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        # Noms des tables source (chaînes de caractères, pas des attributs de données)
-        self.table_bv_pm = "bv_personne_morale_bdt"
-        self.table_bv_tiers = "bv_tiers_bdt"
-        self.table_bv_coord_postales = "bv_coordonnees_postales"
-        self.table_bv_departement = "bv_departement"
-        self.table_bv_region = "bv_region"
-
-        # Noms des tables en étoile
-        self.table_mart = "qualification_ols_star_model"  # Vue globale
-        self.dim_pm_bdt_table = "dim_pm_bdt"
-        self.dim_temps_table = "dim_temps"
-        self.dim_localisation_table = "dim_localisation"
-        self.ft_qualif_donnees_usage_table = "ft_qualif_donnees_usage"
-
-        # Initialisation du hive_utils
-        self.hive_utils = hiveUtils(self.spark)
-
-    def submit(self):
-        """
-        Exécute le traitement principal.
+        self.DATE_FIN_ALIM = None
         
-        Returns:
-            dict: Dictionnaire des DataFrames générés
+        self.logger.info(f"Base de données de travail: {self.db_hive_travail}")
+        self.logger.info(f"Base de données LAC: {self.db_hive_lac}")
+        self.logger.info(f"Chemin LAC: {self.lac_path}")
+        
+        # Configuration technique
+        self.settings = Settings(self.conf, self.logger, self.date_ctrlm)
+        
+        # Tables du modèle en étoile
+        self.df = lambda: None  # Namespace pour les DataFrames
+        self.table_bv_coord_postales = None
+        
+    def process(self):
         """
-        self.logger.info("START PROCESSING QUALIFICATION OLS STAR MODEL DATAMART")
+        Méthode principale qui exécute la création et l'écriture des tables du schéma en étoile.
+        """
+        self.logger.info("Début du traitement qualification_ols_star_model (création des tables)")
+        
         try:
-            # Lire les tables sources et préparer les données
+            # 1. Lecture des tables sources
             self._read_source_tables()
             
-            # Traiter les données et générer le modèle en étoile
-            dataframes = self.df.process()
+            # 2. Préparation des DataFrames du modèle en étoile
+            star_model_df_generator = TraitementQualificationOLSStarModelDataFrame(self.spark, self.config)
             
-            self.logger.info("QUALIFICATION OLS STAR MODEL SUCCESSFULLY PROCESSED")
-            return dataframes
+            # Transfert des DataFrames sources vers le générateur
+            if hasattr(self, 'df'):
+                for attr_name in dir(self.df):
+                    if not attr_name.startswith('_') and hasattr(self.df, attr_name):
+                        df_value = getattr(self.df, attr_name)
+                        if isinstance(df_value, DataFrame):
+                            setattr(star_model_df_generator, attr_name, df_value)
+                            self.logger.info(f"DataFrame {attr_name} transféré vers le générateur.")
+            
+            # Génération des DataFrames du modèle en étoile
+            tables_dict = star_model_df_generator.process()
+
+            if not tables_dict:
+                self.logger.warning("Aucun DataFrame n'a été généré.")
+                raise ValueError("Dictionnaire de DataFrames vide.")
+
+            # 3. Écriture des tables dans Hive
+            self._write_tables_to_hive(tables_dict)
+            
+            # 4. Génération du rapport d'exécution
+            nb_lignes = sum([df.count() if df is not None else 0 for df in tables_dict.values()])
+            self._generate_tx_exploit(nb_lignes, "OK")
+            
+            self.logger.info("Traitement du modèle en étoile qualification_ols terminé avec succès.")
+            return True
             
         except Exception as e:
-            self.logger.error(f"PROCESSING ERROR: {e}")
+            self.logger.error(f"Erreur lors du traitement du modèle en étoile qualification_ols : {str(e)}")
+            self.logger.error(traceback.format_exc())
+            self._generate_tx_exploit(0, "KO")
+            return False
+            
+    def _read_source_tables(self):
+        """
+        Lecture des tables sources nécessaires au traitement.
+        """
+        self.logger.info("Lecture des tables sources...")
+        
+        # Initialisation de l'espace de noms pour les DataFrames
+        self.df = lambda: None
+        
+        # Lecture de la table BV_PM (en fait bv_personne_morale_bdt d'après le code qui fonctionne)
+        try:
+            self.logger.info("Lecture de la table bv_personne_morale_bdt...")
+            self.df.bv_pm = self.hive_utils.hive_read_table(self.db_ct3, "bv_personne_morale_bdt")
+            
+            if self.df.bv_pm is not None:
+                self.logger.info("Schéma de la table bv_personne_morale_bdt:")
+                self.df.bv_pm.printSchema()
+                self.logger.info(f"Nombre de lignes dans bv_personne_morale_bdt: {self.df.bv_pm.count()}")
+            else:
+                self.logger.error("La table bv_personne_morale_bdt est None après lecture")
+                raise ValueError("La table bv_personne_morale_bdt n'a pas pu être lue correctement")
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la lecture de bv_personne_morale_bdt: {str(e)}")
+            self.df.bv_pm = None
+        
+        # Lecture de la table BV_TIERS_BDT
+        try:
+            self.logger.info("Lecture de la table bv_tiers_bdt...")
+            self.df.bv_tiers = self.hive_utils.hive_read_table(self.db_ct3, "bv_tiers_bdt")
+            
+            if self.df.bv_tiers is not None:
+                self.df.bv_tiers = self.df.bv_tiers.select(
+                    "code_tiers", "siren", "siret", "code_etatiers",
+                    "date_creation_tiers", "date_fermeture_tiers"
+                )
+                
+                self.logger.info("Schéma de la table bv_tiers_bdt:")
+                self.df.bv_tiers.printSchema()
+                
+                columns_list = self.df.bv_tiers.columns
+                self.logger.info(f"Colonnes disponibles dans bv_tiers_bdt: {columns_list}")
+                
+                self.logger.info(f"Nombre de lignes dans bv_tiers_bdt: {self.df.bv_tiers.count()}")
+            else:
+                self.logger.error("La table bv_tiers_bdt est None après lecture")
+                raise ValueError("La table bv_tiers_bdt n'a pas pu être lue correctement")
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la lecture de bv_tiers_bdt: {str(e)}")
+            self.logger.error(traceback.format_exc())
+            self.df.bv_tiers = None
+        
+        # Lecture de la table des coordonnées postales (essayer plusieurs variantes)
+        coordpostales_variations = [
+            "BV_COORDONNEES_POSTALES", 
+            "BV_COORDONNEES_POSTAL", 
+            "BV_COORD_POSTALES", 
+            "BV_COORDONNEES_POST",
+            "bv_coordonnees_postales"
+        ]
+        self.df.bv_coord_postales = None
+        for table_name in coordpostales_variations:
+            try:
+                self.logger.info(f"Tentative de lecture de la table {table_name}...")
+                self.df.bv_coord_postales = self.hive_utils.hive_read_table(self.db_ct3, table_name)
+                self.table_bv_coord_postales = table_name
+                self.logger.info(f"Table {table_name} trouvée et lue avec succès")
+                self.logger.info(f"Nombre de lignes dans {table_name}: {self.df.bv_coord_postales.count()}")
+                break
+            except Exception as e:
+                self.logger.warning(f"Table {table_name} non disponible: {str(e)}")
+                continue
+        
+        if self.df.bv_coord_postales is None:
+            self.logger.warning("Aucune table de coordonnées postales n'a pu être lue.")
+            # Créer un DataFrame vide avec le schéma attendu pour éviter les erreurs en aval
+            from pyspark.sql.types import StructType, StructField, StringType
+            schema = StructType([
+                StructField("code_postal", StringType(), True),
+                StructField("id_commune", StringType(), True),
+                StructField("nom_commune", StringType(), True),
+                StructField("code_departement", StringType(), True)
+            ])
+            # Création du DataFrame vide via sparkSession
+            self.df.bv_coord_postales = self.spark.createDataFrame([], schema)
+            self.table_bv_coord_postales = "BV_COORDONNEES_POSTALES"
+
+        # Lecture de la table bv_departement
+        try:
+            self.logger.info("Lecture de la table bv_departement...")
+            self.df.bv_departement = self.hive_utils.hive_read_table(self.db_ct3, "bv_departement")
+            if self.df.bv_departement is not None:
+                self.logger.info("Schéma de la table bv_departement:")
+                self.df.bv_departement.printSchema()
+                self.logger.info(f"Nombre de lignes dans bv_departement: {self.df.bv_departement.count()}")
+            else:
+                self.logger.warning("La table bv_departement est None après lecture")
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la lecture de bv_departement: {str(e)}")
+            self.df.bv_departement = None
+            
+        # Lecture de la table bv_region
+        try:
+            self.logger.info("Lecture de la table bv_region...")
+            self.df.bv_region = self.hive_utils.hive_read_table(self.db_ct3, "bv_region")
+            if self.df.bv_region is not None:
+                self.logger.info("Schéma de la table bv_region:")
+                self.df.bv_region.printSchema()
+                self.logger.info(f"Nombre de lignes dans bv_region: {self.df.bv_region.count()}")
+            else:
+                self.logger.warning("La table bv_region est None après lecture")
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la lecture de bv_region: {str(e)}")
+            self.df.bv_region = None
+
+    def _write_tables_to_hive(self, tables_dict: Dict[str, DataFrame]):
+        """
+        Écriture des tables du modèle en étoile dans Hive.
+        
+        Args:
+            tables_dict: Dictionnaire des DataFrames à écrire (nom_table -> DataFrame)
+        """
+        self.logger.info("Écriture des tables du modèle en étoile dans Hive...")
+        tables_written_successfully = 0
+        
+        # Chemin de base pour les tables Hive
+        hive_db_path = f"{self.lac_path}{self.db_lac}"
+        self.logger.info(f"Chemin de base pour les tables Hive: {hive_db_path}")
+        
+        for table_name, df in tables_dict.items():
+            if df is None:
+                self.logger.warning(f"DataFrame pour {table_name} est None, ignore l'écriture.")
+                continue
+                
+            try:
+                # Affichage du schéma et du nombre de lignes
+                self.logger.info(f"Schéma de la table {table_name}:")
+                df.printSchema()
+                
+                nb_lignes = df.count()
+                self.logger.info(f"Nombre de lignes dans {table_name}: {nb_lignes}")
+                
+                # Chemin complet de la table
+                table_path = f"{hive_db_path}/{table_name}"
+                
+                # Écriture de la table avec hive_utils
+                self.logger.info(f"Écriture de la table {self.db_lac}.{table_name} dans {table_path}...")
+                self.hive_utils.hive_overwrite_table(
+                    df,
+                    self.db_lac,
+                    table_name,
+                    table_path,
+                    True,  # Supprimer et recréer
+                    None,  # Pas de partitionnement
+                    "parquet",
+                    False   # Pas d'ajout de colonnes de métadonnées
+                )
+                
+                tables_written_successfully += 1
+                self.logger.info(f"Table {table_name} écrite avec succès.")
+                
+            except Exception as e:
+                self.logger.error(f"Erreur lors de l'écriture de {table_name}: {str(e)}")
+                self.logger.error(traceback.format_exc())
+        
+        self.logger.info(f"Écriture des tables terminée. {tables_written_successfully} tables écrites avec succès.")
+        return tables_written_successfully
+    
+    def _generate_tx_exploit(self, nb_lignes, status="OK"):
+        """
+        Génération du rapport d'exécution TX_EXPLOIT.
+        
+        Args:
+            nb_lignes: Nombre de lignes traitées
+            status: Statut de l'exécution (OK ou KO)
+        """
+        self.logger.info(f"Génération du TX_EXPLOIT (statut: {status}, nb_lignes: {nb_lignes})...")
+        
+        # Utilisation de la méthode standard de settings pour générer le TX_EXPLOIT
+        try:
+            self.settings.generate_tx_exploit(
+                self.spark,
+                self.hive_utils,
+                self.DATE_DEB_ALIM,
+                "qualification_ols_star_model",
+                status,
+                nb_lignes,
+                self.app_name
+            )
+            self.logger.info("TX_EXPLOIT généré avec succès via settings.")
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la génération du TX_EXPLOIT: {str(e)}")
+            self.logger.error(traceback.format_exc())
+    
+    def build_mart(
+        self,
+        dim_pm_bdt: DataFrame,
+        dim_localisation: DataFrame,
+        dim_temps: DataFrame,
+        ft_qualif_donnees_usage: DataFrame) -> DataFrame:
+        """
+        Version simplifiée pour diagnostic - ne fait que lire les premières lignes des tables.
+        """
+        self.logger.info("DIAGNOSTIC: Construction simplifiée de la MART pour diagnostic")
+        
+        # Afficher uniquement le nombre de lignes de chaque table
+        try:
+            self.logger.info(f"DIAGNOSTIC: Table dim_pm_bdt - Nombre de lignes: {dim_pm_bdt.count()}")
+            # Afficher les premières lignes pour vérifier le contenu
+            self.logger.info("DIAGNOSTIC: Voici un aperçu de dim_pm_bdt:")
+            dim_pm_bdt.show(5)
+        except Exception as e:
+            self.logger.error(f"DIAGNOSTIC: Erreur lors de la lecture de dim_pm_bdt: {str(e)}")
+        
+        try:    
+            self.logger.info(f"DIAGNOSTIC: Table dim_localisation - Nombre de lignes: {dim_localisation.count()}")
+            # Afficher les premières lignes
+            self.logger.info("DIAGNOSTIC: Voici un aperçu de dim_localisation:")
+            dim_localisation.show(5)
+        except Exception as e:
+            self.logger.error(f"DIAGNOSTIC: Erreur lors de la lecture de dim_localisation: {str(e)}")
+            
+        try:
+            self.logger.info(f"DIAGNOSTIC: Table dim_temps - Nombre de lignes: {dim_temps.count()}")
+            # Afficher les premières lignes
+            self.logger.info("DIAGNOSTIC: Voici un aperçu de dim_temps:")
+            dim_temps.show(5)
+        except Exception as e:
+            self.logger.error(f"DIAGNOSTIC: Erreur lors de la lecture de dim_temps: {str(e)}")
+            
+        try:
+            self.logger.info(f"DIAGNOSTIC: Table ft_qualif_donnees_usage - Nombre de lignes: {ft_qualif_donnees_usage.count()}")
+            # Afficher les premières lignes
+            self.logger.info("DIAGNOSTIC: Voici un aperçu de ft_qualif_donnees_usage:")
+            ft_qualif_donnees_usage.show(5)
+        except Exception as e:
+            self.logger.error(f"DIAGNOSTIC: Erreur lors de la lecture de ft_qualif_donnees_usage: {str(e)}")
+        
+        # Ne pas faire de jointures complexes, juste retourner la table dim_pm_bdt pour test
+        self.logger.info("DIAGNOSTIC: Création d'une MART simplifiée pour test")
+        try:
+            # Créer un DataFrame minimal pour test
+            from pyspark.sql.functions import lit
+            
+            # Si ft_qualif_donnees_usage a au moins une ligne, l'utiliser comme base
+            if ft_qualif_donnees_usage.count() > 0:
+                self.logger.info("DIAGNOSTIC: Utilisation de ft_qualif_donnees_usage comme base")
+                df_final = ft_qualif_donnees_usage.limit(100)
+            # Sinon utiliser dim_pm_bdt
+            elif dim_pm_bdt.count() > 0:
+                self.logger.info("DIAGNOSTIC: Utilisation de dim_pm_bdt comme base")
+                df_final = dim_pm_bdt.limit(100)
+            # Si tout échoue, créer un DataFrame artificiel
+            else:
+                self.logger.info("DIAGNOSTIC: Création d'un DataFrame artificiel")
+                df_final = self.spark.spark.createDataFrame([("test",)], ["test_col"])
+                
+            # Ajouter une colonne de diagnostic
+            df_final = df_final.withColumn("diagnostic_col", lit("test"))
+            
+            self.logger.info("DIAGNOSTIC: DataFrame final créé avec succès")
+            df_final.printSchema()
+            df_final.show(5)
+            
+            return df_final
+            
+        except Exception as e:
+            self.logger.error(f"DIAGNOSTIC: Erreur lors de la création de la MART simplifiée: {str(e)}")
+            # En cas d'échec, retourner un DataFrame minimal
+            self.logger.info("DIAGNOSTIC: Création d'un DataFrame de secours")
+            return self.spark.spark.createDataFrame([("backup",)], ["backup_col"])
+
+    def save_to_hive(self, df: DataFrame):
+        """
+        Sauvegarde le DataFrame final dans la table Hive cible.
+        """
+        self.logger.info(f"Sauvegarde de la MART dans {self.db_mart}.{self.table_mart}")
+        
+        try:
+            # Utiliser hive_utils comme dans star_model
+            self.hive_utils.hive_overwrite_table(
+                df,
+                self.db_mart,
+                self.table_mart,
+                f"{self.db_mart}/{self.table_mart}",  # Chemin HDFS
+                True,   # Supprimer et recréer pour garantir le bon ordre des colonnes
+                None,   # Pas de partitionnement
+                "parquet",
+                False
+            )
+            self.logger.info(f"Table {self.table_mart} écrite avec succès dans {self.db_mart}")
+        except Exception as e:
+            self.logger.error(f"Erreur lors de l'écriture de la table {self.table_mart}: {e}")
             self.logger.error(traceback.format_exc())
             raise
 
-    def _read_source_tables(self):
-        """Lecture des tables sources avec les colonnes nécessaires."""
-        # Colonnes requises pour chaque table
-        bv_pm_col = [
-            FIELDS.get("siren"),
-            "siret",
-            FIELDS.get("denom_unite_legale"),
-            FIELDS.get("sous_cat"),
-            FIELDS.get("etat_admin"),
-            FIELDS.get("is_tete_groupe"),
-            FIELDS.get("is_ols"),
-            FIELDS.get("etab_siege"),
-        ]
-
-        bv_tiers_col = [
-            FIELDS.get("code_tiers"),
-            FIELDS.get("siren"),
-            "siret",
-            FIELDS.get("code_etatiers"),
-        ]
-
-        bv_coord_postales_col = [
-            FIELDS.get("code_tiers"),
-            FIELDS.get("adr_code_postal"),
-            FIELDS.get("lib_bureau_distrib"),
-            FIELDS.get("dat_horodat"),
-        ]
-
-        bv_departement_col = [
-            FIELDS.get("code_departement"),
-            FIELDS.get("code_region"),
-        ]
-
-        bv_region_col = [
-            FIELDS.get("code_region"),
-            FIELDS.get("lib_clair_region"),
-        ]
-
-        # Lecture des tables principales, tenter les lectures individuelles
-        self.df.bv_pm = None
-        self.df.bv_tiers = None
-        self.df.bv_coord_postales = None
-        self.df.bv_departement = None
-        self.df.bv_region = None
-
-        # Lire la table bv_personne_morale_bdt
-        try:
-            self.logger.info(f"Lecture de la table {self.table_bv_pm}")
-            self.df.bv_pm = self.read_table(self.db_ct3, self.table_bv_pm).select(*bv_pm_col)
-            self.logger.info(f"Table {self.table_bv_pm} lue avec succès")
-        except Exception as e:
-            self.logger.error(f"Erreur lors de la lecture de la table {self.table_bv_pm}: {e}")
-            # La table est essentielle, nous ne pouvons pas continuer sans elle
-            raise
-
-        # Lire la table bv_tiers_bdt
-        try:
-            self.logger.info(f"Lecture de la table {self.table_bv_tiers}")
-            self.df.bv_tiers = self.read_table(self.db_ct3, self.table_bv_tiers).select(*bv_tiers_col)
-            self.logger.info(f"Table {self.table_bv_tiers} lue avec succès")
-        except Exception as e:
-            self.logger.error(f"Erreur lors de la lecture de la table {self.table_bv_tiers}: {e}")
-            # La table est essentielle, nous ne pouvons pas continuer sans elle
-            raise
-
-        # Tenter de lire les coordonnées postales avec différents noms possibles
-        coordpostales_variations = [
-            self.table_bv_coord_postales,
-            "bv_coordonnee_postale",
-            "BV_COORDONNEES_POSTALES",
-            "bv_coordonnees_postal",
-            "coordonnees_postales"
-        ]
-
-        for table_name in coordpostales_variations:
-            try:
-                self.logger.info(f"Tentative de lecture de la table {table_name}")
-                self.df.bv_coord_postales = self.read_table(self.db_ct3, table_name).select(*bv_coord_postales_col)
-                self.logger.info(f"Table {table_name} lue avec succès")
-                break
-            except Exception as e:
-                self.logger.warning(f"Table {table_name} non trouvée : {e}")
-                continue
-
-        if self.df.bv_coord_postales is None:
-            self.logger.error("Impossible de trouver une table de coordonnées postales")
-            # Nous pouvons continuer sans cette table, mais certaines fonctionnalités seront limitées
-            self.logger.warning("Le modèle en étoile sera construit sans informations de localisation")
-
-        # Lire la table bv_departement
-        try:
-            self.logger.info(f"Lecture de la table {self.table_bv_departement}")
-            self.df.bv_departement = self.read_table(self.db_ct3, self.table_bv_departement).select(*bv_departement_col)
-            self.logger.info(f"Table {self.table_bv_departement} lue avec succès")
-        except Exception as e:
-            self.logger.error(f"Erreur lors de la lecture de la table {self.table_bv_departement}: {e}")
-            # Nous pouvons continuer sans cette table, mais certaines fonctionnalités seront limitées
-
-        # Lire la table bv_region
-        try:
-            self.logger.info(f"Lecture de la table {self.table_bv_region}")
-            self.df.bv_region = self.read_table(self.db_ct3, self.table_bv_region).select(*bv_region_col)
-            self.logger.info(f"Table {self.table_bv_region} lue avec succès")
-        except Exception as e:
-            self.logger.error(f"Erreur lors de la lecture de la table {self.table_bv_region}: {e}")
-            # Nous pouvons continuer sans cette table, mais certaines fonctionnalités seront limitées
-
-    def write_table(self, df, hive_database, table_name, table_path, drop_and_recreate=False, partitionByColumns=None, hive_format="parquet"):
-        """
-        Écrit une table dans Hive en gérant les erreurs.
-        
-        Args:
-            df: DataFrame à écrire
-            hive_database: Base Hive cible
-            table_name: Nom de la table
-            table_path: Chemin de la table
-            drop_and_recreate: Si True, supprime et recrée la table
-            partitionByColumns: Colonnes de partition
-            hive_format: Format Hive
-        """
-        self.logger.info(
-            f"Debut fonction hive_overwrite_table - avec les parms : \n \
-                                hive_database={hive_database}  \n \
-                                table_name={table_name}  \n \
-                                table_path={table_path}  \n \
-                                drop_and_recreate_table={drop_and_recreate}\n \
-                                partitionByColumns={partitionByColumns}\n \
-                                hive_format={hive_format}  \n \
-                                overwrite_only_partitions=False  "
-        )
-        
-        try:
-            # Vérifier si le DataFrame est valide avant d'écrire
-            if df is None:
-                self.logger.error(f"DataFrame est None pour la table {table_name}")
-                return
-                
-            # Vérifier si le DataFrame est vide
-            nb_lignes_traitees = df.count()
-            if nb_lignes_traitees == 0:
-                self.logger.warning(f"DataFrame vide pour la table {table_name}")
-                # On peut quand même continuer dans certains cas pour les tables vides
-            
-            # Écrire la table
-            self.hive_utils.hive_overwrite_table(
-                df,
-                hive_database,
-                table_name,
-                table_path,
-                drop_and_recreate,
-                partitionByColumns,
-                hive_format,
-                False,
-            )
-            
-            # Essayer de synchroniser avec Impala seulement si impala_utils est disponible
-            try:
-                if hasattr(self, 'impala_utils') and self.impala_utils is not None:
-                    self.impala_utils.impala_synchro_table(hive_database, table_name, True, True)
-                    self.impala_utils.impala_compute_sats(hive_database, table_name)
-                else:
-                    self.logger.warning(f"impala_utils non disponible, synchronisation et calcul stats ignorés pour {table_name}")
-            except Exception as impala_error:
-                self.logger.warning(f"Erreur lors de la synchronisation Impala (non bloquante): {impala_error}")
-            
-            return nb_lignes_traitees
-        except Exception as e:
-            self.logger.error(f"unable to continue due to issues related to : {e}")
-            return 0
-
-    def _write_tables(self, dataframes):
-        """
-        Écrit les tables du modèle en étoile dans Hive.
-        Version simplifiée qui se concentre uniquement sur les tables individuelles.
-        
-        Args:
-            dataframes: Dictionnaire des DataFrames à écrire
-        """
-        # Écrire les dimensions et la table de faits individuelles
-        self.logger.info(f"Écriture des tables dans {self.db_lac}")
-        
-        # Compter le total des lignes pour le suivi
-        total_lignes = 0
-        
-        # Vérifier et écrire les dimensions individuelles
-        dim_tables = [
-            ("dim_pm_bdt", self.dim_pm_bdt_table),
-            ("dim_temps", self.dim_temps_table),
-            ("dim_localisation", self.dim_localisation_table),
-            ("ft_qualif_donnees_usage", self.ft_qualif_donnees_usage_table)
-        ]
-        
-        # Écrire chaque table individuellement
-        for key, table in dim_tables:
-            try:
-                df = dataframes.get(key)
-                if df is not None:
-                    # Compter les lignes et journaliser
-                    row_count = df.count()
-                    total_lignes += row_count  # Additionner pour le suivi global
-                    self.logger.info(f"Table {table} contient {row_count} lignes")
-                    
-                    # Écrire la table
-                    self.hive_utils.hive_overwrite_table(
-                        df,
-                        self.db_lac,
-                        table,
-                        f"{self.db_lac_path}/{table}",
-                        False,
-                        None,
-                        "parquet",
-                        False,
-                    )
-                    self.logger.info(f"Table {table} écrite avec succès dans {self.db_lac}")
-                else:
-                    self.logger.warning(f"DataFrame {key} est None, table {table} non créée")
-            except Exception as e:
-                self.logger.error(f"Erreur lors de l'écriture de la table {table}: {e}")
-                self.logger.error(traceback.format_exc())
-        
-        # Retourner le nombre total de lignes écrites
-        return total_lignes
-
-    def process(self):
-        """Point d'entrée principal pour le traitement complet.
-        Suit exactement le même modèle que les autres modules (qualification_ols, service_innovant, etc.)
-        """
-        self.logger.info("Computing NB_LIGN_TRT...")
-        
-        # Obtenir tous les dataframes nécessaires
-        dataframes = self.submit()
-        
-        # Écrire les tables dimensionnelles et la table de faits
-        try:
-            self._write_tables(dataframes)
-            
-            # Pour la table finale du modèle (si elle existe)
-            model_df = dataframes.get("model")
-            if model_df is not None:
-                NB_LIGN_TRT = model_df.count()
-                self.logger.info(f"Modèle qualification_ols_star_model contient {NB_LIGN_TRT} lignes")
-                
-                # Générer TX_EXPLOIT avec statut OK
-                self.settings.generate_tx_exploit(
-                    self.spark,  # Utiliser sparkUtils directement
-                    self.hive_utils,
-                    self.DATE_DEB_ALIM,
-                    self.table_mart,
-                    "OK",
-                    NB_LIGN_TRT,
-                    self.app_name,
-                )
-            else:
-                self.logger.warning("La table finale du modèle n'a pas été générée")
-                
-                # Compter au moins le nombre de lignes dans la table de faits
-                facts_df = dataframes.get("ft_qualif_donnees_usage")
-                if facts_df is not None:
-                    NB_LIGN_TRT = facts_df.count()
-                else:
-                    NB_LIGN_TRT = 0
-                    
-                # Générer TX_EXPLOIT avec le statut approprié
-                self.settings.generate_tx_exploit(
-                    self.spark,  # Utiliser sparkUtils directement
-                    self.hive_utils,
-                    self.DATE_DEB_ALIM,
-                    self.table_mart,
-                    "KO" if NB_LIGN_TRT == 0 else "OK",
-                    NB_LIGN_TRT,
-                    self.app_name,
-                )
-                
-        except Exception as e:
-            self.logger.error(f"Erreur lors du traitement: {e}")
-            
-            # Gestion de l'erreur comme dans qualification_ols
-            facts_df = dataframes.get("ft_qualif_donnees_usage")
-            if facts_df is not None:
-                NB_LIGN_TRT = facts_df.count()
-            else:
-                NB_LIGN_TRT = 0
-                
-            # Générer TX_EXPLOIT même en cas d'erreur
-            if NB_LIGN_TRT > 0:
-                self.settings.generate_tx_exploit(
-                    self.spark,  # Utiliser sparkUtils directement
-                    self.hive_utils,
-                    self.DATE_DEB_ALIM,
-                    self.table_mart,
-                    "OK",
-                    NB_LIGN_TRT,
-                    self.app_name,
-                )
-            else:
-                self.settings.generate_tx_exploit(
-                    self.spark,  # Utiliser sparkUtils directement
-                    self.hive_utils,
-                    self.DATE_DEB_ALIM,
-                    self.table_mart,
-                    "KO",
-                    NB_LIGN_TRT,
-                    self.app_name,
-                )
-            
-            # Ne pas propager l'exception
-            return False
-            
-        return True

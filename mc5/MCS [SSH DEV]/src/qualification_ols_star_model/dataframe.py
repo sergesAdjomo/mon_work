@@ -136,11 +136,11 @@ class TraitementQualificationOLSStarModelDataFrame(CommonUtils):
         """Crée un DataFrame DIM_PM_BDT vide mais avec la structure correcte via SQL."""
         query = """
         SELECT 
-            CAST(NULL AS STRING) AS SIREN,
+            CAST(NULL AS STRING) AS siren,
             CAST(NULL AS STRING) AS annee,
-            CAST(NULL AS STRING) AS Raison_sociale,
-            CAST(NULL AS STRING) AS Sous_categorie,
-            CAST(NULL AS STRING) AS Tete_de_groupe,
+            CAST(NULL AS STRING) AS denomination_unite_legale,
+            CAST(NULL AS STRING) AS sous_categorie,
+            CAST(NULL AS STRING) AS tete_de_groupe,
             CAST(NULL AS STRING) AS annee_mois,
             CAST(NULL AS STRING) AS annee_mois_SIREN,
             CAST(NULL AS STRING) AS code_tiers

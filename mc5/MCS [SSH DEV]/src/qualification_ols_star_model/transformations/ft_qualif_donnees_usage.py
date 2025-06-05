@@ -122,13 +122,28 @@ def prepare_ft_qualif_donnees_usage(dim_pm_bdt, bv_requetes=None, bv_finances=No
             ft_qualif_donnees_usage = ft_qualif_donnees_usage.withColumn("chiffre_d_affaire_moyen", lit(5000.0))
             ft_qualif_donnees_usage = ft_qualif_donnees_usage.withColumn("montant_signe", lit(25000.0))
             
-            # Sélection des colonnes finales
+            # Ajouter la colonne SIREN si elle n'existe pas
+            if "SIREN" not in ft_qualif_donnees_usage.columns:
+                # Extraire SIREN de annee_mois_SIREN ou créer une valeur par défaut
+                ft_qualif_donnees_usage = ft_qualif_donnees_usage.withColumn(
+                    "SIREN", 
+                    when(col("annee_mois_SIREN").contains("_"), 
+                         expr("substring(annee_mois_SIREN, instr(annee_mois_SIREN, '_')+1, length(annee_mois_SIREN))"))
+                    .otherwise(lit("000000000"))
+                )
+                
+            # S'assurer que code_tiers existe
+            if "code_tiers" not in ft_qualif_donnees_usage.columns:
+                ft_qualif_donnees_usage = ft_qualif_donnees_usage.withColumn("code_tiers", lit("00000000"))
+            
+            # Sélection des colonnes finales selon l'ordre exact fourni par l'utilisateur
             ft_qualif_donnees_usage = ft_qualif_donnees_usage.select(
-                "annee_mois_SIREN", 
-                "annee_mois", 
-                "nb_de_tiers", 
-                "chiffre_d_affaire_moyen", 
-                "montant_signe"
+                "annee_mois_SIREN",        # PK - clé de jointure
+                "annee_mois",              # FK1 
+                "SIREN",                   # Identifiant SIREN
+                "nb_de_tiers",             # Métrique (int)
+                "chiffre_d_affaire_moyen",  # Métrique (int)
+                "montant_signe"            # Métrique (int)
             )
             
             return ft_qualif_donnees_usage
