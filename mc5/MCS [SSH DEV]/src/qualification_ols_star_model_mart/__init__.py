@@ -1,0 +1,3 @@
+__all__ = ['TraitementQualificationOLSStarModelMart']
+
+from qualification_ols_star_model_mart.traitement import TraitementQualificationOLSStarModelMart
