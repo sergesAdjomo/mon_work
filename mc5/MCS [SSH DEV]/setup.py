@@ -5,7 +5,7 @@ setuptools.setup(
     # à amender en fonction du contexte du projet
     name="mc5",
     # Indiquez ici le numéro de version courant
-    version="0.0.3",
+    version="5.4.2",
     packages=setuptools.find_namespace_packages(where="src", include=["*"]),
     package_dir={"": "src"},
     url="http://bitbucket.serv.cdc.fr/scm/mc5/module-mc5.git",
@@ -19,7 +19,7 @@ setuptools.setup(
     # Indiquez ici les dépendances du paquet
     # La précision de la version est facultative, mais recommandée
     # Sauf exception, cette liste ne doit pas rester vide
-    install_requires=["venv-pack==0.2.0", "hadoop-utils-icdc==0.0.39", "ingesteur_spark_jdbc==1.1.0","xlrd"],
+    install_requires=["venv-pack==0.2.0", "hadoop-utils-icdc==0.0.39", "ingesteur_spark_jdbc==1.2.0","xlrd"],
     entry_points={
         "console_scripts": [
             "job_traitement_mc5 = job_traitement_mc5.main:main",

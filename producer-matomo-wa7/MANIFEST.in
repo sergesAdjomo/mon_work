@@ -1,0 +1,17 @@
+# Ajouter ici la liste des fichiers de données supplémentaires
+
+# que vous souhaitez voir inclus avec ce paquet
+
+# Ces fichiers ne doivent pas êtres modifiés à l'exécution
+
+# et seront remis à leur état initial à chaque réinstallation
+
+# Les fichiers non inclus dans le répertoire src/wa7/producerMatomo
+
+# ne seront pas disponibles à l'exécution
+
+# Séparez bien votre code de vos données dans des répertoires différents
+
+graft src/wa7/producerMatomo/data
+
+# Documentation complète ici : https://packaging.python.org/guides/using-manifest-in/ 

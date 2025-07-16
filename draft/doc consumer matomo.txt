@@ -1,0 +1,122 @@
+
+
+===============================================================
+
+
+
+Consumer matomo : ConsumerMatomo
+
+
+
+===============================================================
+
+
+
+Ce projet sert à ingérer dans HDFS et Hive en utilisant Spark batch, les données matomo depuis un ou plusieurs topics kafka de un ou plusieurs sites.
+
+
+
+Le fonctionnement Générale:
+
+
+
+Les données sont récupérées en format json depuis kafka. il y a plusieurs types de données dans le même topic :
+
+
+
+
+
+
+
+les données brutes de journal de navigation par id site
+
+
+
+le nom des custum dimensions.
+
+
+
+les données goal, qui sont les objectifs fixé sur le site.
+
+
+
+Les données sont lus et des filtres adaptés permet de filtrer les types de données et de les traiter puis stocker en brute.
+
+
+
+Pour l'alimentation du lac on détecte les changements sur la partie brute puis on alimente le lac avec ces changements.
+
+
+
+1. le dossier parm :
+
+
+
+Les paramètres
+
+
+
++--- parm
+|   +--- wa7_conf.ini ➡️ fichier pour les variables d'environnements 
+|   +--- wa7.env ➡️ fichier pour les variables d'environnements  
+|   +--- wa7.fonctions.env ➡️ fichier pour les fonctions batch ksh  
+|   +--- wa7_logging.conf ➡️ fichier pour le paramétrage du logging   
+
+
+
+2. le dossier shellapp :
+
+
+
++--- shellapp
+|   +--- common.ksh ➡️  fichier qui permet de faire le pairing env, c'est à dire de transformer le livrable en un environnement virtuel. 
+|   +--- packaging.KSH ➡️ fichier pour le build du projet dans le home. se rassurer de la présence du fichier pairing.env dans le bin  
+
+
+3. le dossier shell et lancement :
+
+
+
+Le lancement se font dans l'ordre suivantes :
+
+
+
+
+
+
+
+./shell/DDWA7AJA0_KAFKA.KSH
+
+
+
+
+
+./shell/DDWA7AJA1_BTCH.KSH
+
+
+
+
+
++--- shell
+|   +--- DDWA7AJA0_KAFKA.ksh ➡️ ksh pour ingérer les données depuis kafka dans la zone brute 
+|   +--- DDWA7AJA1_BTCH.KSH ➡️ ksh pour exposer dans le lac les données 
+|   +--- DDWA7ADA2_CREATE_VIEW.KSH ➡️ ksh pour créer les vues peut être lancer une fois
+
+
+3. le répertoire src :
+
+
+
++--- src
+| +--- wa7 fichier qui permet de faire le pairing env, c'est à dire de transformer le livrable en un environnement virtuel. 
+| +--- kafka 
+| +--- common 
+| +--- setting.py ➡️ dans ce fichier on va réccupérer les variables définit dans notre parm. 
+| +--- ingestion 
+| +--- kafkaconsumer.py ➡️ On va définir les fonctions de lecture kafka et gestion des offsets. 
+| +--- handleMessages.py ➡️ On formatte le message réccupérer de kafka, annonymise et génère un dataframe 
+| +--- hive.py ➡️ On définit les fonctions en relation avec hive, comme l'écriture en base, la liste des tables existants en base
+| +--- run_ingestion.py ➡️ On va implémenter l'ensemble des fonctions pour consommer et écrire dans hive l'ensemble des données 
+| +--- tools 
+| +--- configuration.py ➡️ pour définir principalement les fonction de réccupération de conf et le logger. 
+| +--- main.py ➡️ on va lancer le traitement porter par run_ingestion

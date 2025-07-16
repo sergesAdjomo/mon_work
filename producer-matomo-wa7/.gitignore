@@ -1,0 +1,17 @@
+ 
+*.pyc
+*.idea
+htmlcov
+*/.coverage
+*.p
+*.df
+*.egg-info
+*.xlsx
+data/*
+.coverage
+build
+dist
+/.scannerwork/
+__pycache__
+.ipynb_checkpoints
+ 

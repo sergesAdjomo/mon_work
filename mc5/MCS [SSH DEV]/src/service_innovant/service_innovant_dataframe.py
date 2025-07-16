@@ -1,4 +1,3 @@
- 
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, lit, when
 from traitement_spark.code.settings import Settings
@@ -78,6 +77,13 @@ class TraitementServiceInnovantDataFrame(CommonUtils):
                         col(Fields.FIELDS.get("url"))
                         == "https://www.banquedesterritoires.fr/produits-services/services-digitaux/cartographie-lieu-innovation-francais"
                     )  
+                    | (
+                        col(Fields.FIELDS.get("pagetitle")) == "Contrib France Foncier - Home"
+                    )
+                    | (
+                        col(Fields.FIELDS.get("url"))
+                        == "https://www.banquedesterritoires.fr/notice-de-lecture-des-donnees-du-portail-france-foncier"
+                    )
                 )
             )
             return self
@@ -125,6 +131,14 @@ class TraitementServiceInnovantDataFrame(CommonUtils):
                     "France Foncier +",
                 )
                 .when(
+                    col(Fields.FIELDS.get("url")) == "https://www.banquedesterritoires.fr/notice-de-lecture-des-donnees-du-portail-france-foncier",
+                    "France Foncier +",
+                )
+                .when(
+                    col(Fields.FIELDS.get("pagetitle")) == "Contrib France Foncier - Home",
+                    "France Foncier + Connecté",
+                )
+                .when(
                     (
                         col(Fields.FIELDS.get("url"))
                         == "https://www.banquedesterritoires.fr/produits-services/services-digitaux/cartographie-des-structures-innovation-francaises"
@@ -136,7 +150,13 @@ class TraitementServiceInnovantDataFrame(CommonUtils):
                     "Cartographie des structures d'innovation territoriales",
                 )
                 .otherwise("Autres pages"),
-            ).withColumn("Nom_Categorie", lit("Services Innovant"))
+            ).withColumn("Nom_Categorie", 
+                when(
+                    col(Fields.FIELDS.get("url")) == "https://www.banquedesterritoires.fr/notice-de-lecture-des-donnees-du-portail-france-foncier",
+                    "Notice de Lecture"
+                )
+                .otherwise("Services Innovants")
+            )
             return self
         except Exception as e:
             self.logger.error(f"unable to continue due to issues related to : {e}")
@@ -170,7 +190,7 @@ class TraitementServiceInnovantDataFrame(CommonUtils):
                 .when(
                     col(Fields.FIELDS.get("url"))
                     == "https://www.banquedesterritoires.fr/produits-services/services-digitaux/dataviz-territoires-dindustrie",
-                    "Dataviz TI",
+                    "Dataviz TI Privé",
                 )
                 .when(
                     col(Fields.FIELDS.get("url"))

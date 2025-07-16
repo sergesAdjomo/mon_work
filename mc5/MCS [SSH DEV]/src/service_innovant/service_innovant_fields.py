@@ -1,4 +1,3 @@
- 
 FIELDS = {
     "idvisit": "idvisit",
     "pagetitle": "Titre_de_Page",

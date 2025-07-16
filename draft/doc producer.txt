@@ -1,0 +1,118 @@
+
+
+===============================================================
+
+
+
+aspiration matomo : producerMatomo
+
+
+
+===============================================================
+
+
+
+Ce projet sert à récupérer les données depuis l'api matomo de un ou plusieurs site et de les envoyer vers un seul topic kafka.
+
+
+
+Le fonctionnement Générale:
+
+
+
+Les données sont récupérées en format json depuis l'api matomo et envoyées vers le topic kafka en format json. chaque lancement permet de recupérer les données à partir du point d'arret du dernier lancement jusqu'à la date actuelle - 1 jour.
+
+
+
+Les données sont réccupéré par pagination pour ne pas casser l'api matomo, une limite de 1000 est fixé à chaque appel de l'api. Le batch est donc une boucle de pagination, qui enrégistre à chaque étape son évolution. En cas de ko lors de l'éxécution une relance permet de continuer la réccupération de donnée à partir du moment où il y a eu interuption.
+
+
+
+1. Paramétrage :
+
+
+
+Les paramètres sont définit dans 2 fichiers du répertoire parm. wa7_conf.ini et wa7.env
+
+
+
++--- parm
+|   +--- wa7_conf.ini
+|        +--- START_DATE : 2023-04-01  ➡️ définit la date init utilisées pour réccupérer les données pour chaque id_site ou si le fichier checkpoint est supprimé 
+|        +--- MATOMO_FILTER_LIMIT : 1000 ➡️ définit le nombre maximum de données appellé. 
+|        +--- FILE_PATH_LAST_OFFSET: /dz-matomo/applis/wa7/data/last_filter_offset ➡️ checkpoint du nbre de donnée déjà réccupéré pour un jour donné par id_site
+|        +--- FILE_PATH_FILTERDATE: /dz-matomo/applis/wa7/data/filterdate ➡️ checkpoint du jour sur lequel les données sont reccupéré par id_site.  
+|        +--- COLONNE_ANNOMYSE: ➡️ définit la liste des colonne à anonymiser séparé par des virgules. 
+|        +--- SALAGE: xxxxx ➡️ définit la clé de salage pour complexifier l'annomysation des données. 
+|        +--- KAFKA_TOPIC: ➡️ définit le topic kafka 
+|   +--- wa7.env
+|        +--- MATOMO_ID_SITE="6,15" ➡️ définit la liste des id_site à réccupérer. Chaque ajout d'un id_site réccupère la donnée lié à ce id_site 
+|        +--- MATOMO_API_URL="https://sps-support-interne-int.di.cdc.fr/WA7/4752/" ➡️ définit l'url matomo variabilisé sur la sps 
+|        +--- MATOMO_SPS_USER="xxxxx" ➡️ définit le user sur la sps créé par l'équipe sps demande faite par jira : https://godzilla.serv.cdc.fr/browse/APISPS-359
+|        +--- MATOMO_SPS_MDP="xxxxx" ➡️  définit le password sur la sps créé par l'équipe sps demande faite par jira également 
+|        +--- MATOMO_API_TOKEN="xxxxx" ➡️ définit le token d'authentification au niveau de matomo. 
+|        +--- KAFKA_SERVERS="xxxxx" ➡️ la liste des brokers kafka pour un environement donné
+|        +--- CLUSTERID="IN02" ➡️ on défini le cluster id lié à l'environnement 
+|        +--- KAFKA_USER ➡️  définit le user kafka créé via l'iac exemple http://bitbucket.serv.cdc.fr/projects/KF2/repos/ptf_bdt-wa7-matomo-data/browse
+|        +--- KAFKA_PASSWORD="xxxx" ➡️ définit le password reçu par mail après la PR de l'iac sur les branche env/<clusterid>. le mail est celui de ldOps renseigné dans le descriptor 
+|   +--- wa7.fonctions.env
+|   +--- logging.conf
+
+
+
+2. lancement :
+
+
+
+Pour lancer l'aspiration des données matomo, il suffit de lancer la commande suivante :
+
+
+
+
+
+
+
+./shell/DDWA7AJA0_KFK.KSH
+
+
+
++--- shell
+|   +--- common.ksh ➡️  fichier qui permet de faire le pairing env, c'est à dire de transformer le livrable en un environnement virtuel. 
+|   +--- DDWA7AJA0_KFK.KSH ➡️ fichier pour exécuter notre batch, se lance sans paramètre supplémentaire autre que la date ctrlm. 
+
+
+3. le répertoire src :
+
+
+
++--- src
+|   +--- wa7  fichier qui permet de faire le pairing env, c'est à dire de transformer le livrable en un environnement virtuel. 
+|       +--- producerMatomo 
+|           +--- producer  
+|               +--- parameter.py ➡️ dans ce fichier on va réccupérer les variables définit dans notre parm. 
+|               +--- common.py ➡️ on définit les fonctions générique. 
+|               +--- kafkasender.py ➡️ On définit la class qui va envoyer les données vers le topic kafka 
+|               +--- aspirateur.py ➡️  On définit les fonctions qui vont réccupérer les données matomo 
+|                   +--- request_custom_dimension ➡️ pour réccupérer le nom des dimensions ajouté, ils ne sont pas renommé dans les données brutes 
+|                   +--- request_goal ➡️ pour réccupérer les objectifs fixé pour le site 
+|                   +--- request_matomo ➡️ pour réccupérer les données brute de navigation (journal des visites). 
+|                   +--- aspirateur ➡️ permet de boucler avec la condition tant que pour réccupérer les données. 
+|                   +--- handle_jsonresponse ➡️ pour chaque reponse on définit le nombre réccupérer et on envoie vers kafka 
+|           +--- tools 
+|               +--- configuration.py ➡️ pour définir principalement les fonction de réccupération de conf et le logger. 
+|           +--- main.py ➡️ on va boucler sur la liste des id_site et envoyer les données vers kafka 
+
+
+4. le répertoire data :
+
+
+
+ce répertoire est utilisé pendant le traitement
+
+
+
++--- data
+| +--- filterdate6.txt ➡️ checkpoint qui donne le jour des données déjà traité ou en cours de traitement pour l'id site 6. 
+| +--- ilterdate15.txt ➡️ checkpoint qui donne le jour des données déjà traité ou en cours de traitement pour l'id site 15.
+| +--- last_filter_offset6.txt ➡️ checkpoint qui donne le nombre de données déjà traité pour la journée inscrit dans filterdate pour l'id site 6. 
+| +--- last_filter_offset15.txt ➡️ checkpoint qui donne le nombre de données déjà traité pour la journée inscrit dans filterdate pour l'id site 15.
