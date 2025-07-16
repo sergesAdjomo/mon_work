@@ -1,0 +1,394 @@
+ 
+		app_name : ci6
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-		Liste des options pour la section KAFKA : ['module_name', 'bootstrap_servers', 'kafka_env', 'sasl_mechanism', 'security_protocol', 'certification', 'checkpoint', 'filename', 'schema_registry_url', 'kafka_user', 'credential_path', 'credential_provider_alias', 'topic', 'environment', 'hdfs_base_directory', 'app_name']
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			module_name : ci6
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			bootstrap_servers : cp-ck-gw01-c1-rc01.serv.cdc.fr:11060,cp-ck-gw02-c1-rc01.serv.cdc.fr:11060,cp-ck-gw03-c1-rc01.serv.cdc.fr:11060,cp-ck-gw04-c1-rc01.serv.cdc.fr:11060
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			kafka_env : rc01
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			sasl_mechanism : PLAIN
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			security_protocol : SASL_SSL
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			certification : /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			checkpoint : /rec/ep/flux_entrant/ci6/tmp
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			filename : metadata_kafka.json
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			schema_registry_url : https://cp-schema-registry-rc01-rec.hpocdc.local
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			kafka_user : svckf2-ci6-rc01-ciam-data
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			credential_path : /rec/ep/flux_entrant/ci6/credentials/svckf2-ci6-rc01-ciam.password.jceks
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			credential_provider_alias : svckf2-ci6-rc01-ciam.password.alias
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			topic : rc01.01.ci6.ciam-legacy.pub.structures-audits
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			environment : rec
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			hdfs_base_directory : /rec/ep/traitement/ci6
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			app_name : ci6
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-		Liste des options pour la section KAFKA_LOG : ['kafka_log_is_active', 'kafka_log_bootstrap_servers', 'kafka_log_topic', 'kafka_log_on_thread', 'environment', 'hdfs_base_directory', 'app_name']
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			kafka_log_is_active : yes
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			kafka_log_bootstrap_servers : cp-ck-gw01-c1-rc01.serv.cdc.fr:11060,cp-ck-gw02-c1-rc01.serv.cdc.fr:11060,cp-ck-gw03-c1-rc01.serv.cdc.fr:11060,cp-ck-gw04-c1-rc01.serv.cdc.fr:11060
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			kafka_log_topic : rc01.01.ci6.bam.pub.logs
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			kafka_log_on_thread : yes
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			environment : rec
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			hdfs_base_directory : /rec/ep/traitement/ci6
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-DEBUG-			app_name : ci6
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.configuration-INFO-log filename : ci6_logging.conf - conf filename : ci6.conf - date ctrlm : 20250623
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.spark-INFO-init of sparkUtils
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.spark-INFO-	Debut Traitement creation Spark session
+2025/06/23 14:34:44-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		App_name: ci6
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-	Configuration Spark Session
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.legacy.timeParserPolicy : LEGACY
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.hive.hiveserver2.jdbc.url : jdbc:hive2://dbmndeva31004.hopr.bigdata.cdc.fr:2181,dbmndeva31005.hopr.bigdata.cdc.fr:2181,dbmndeva31006.hopr.bigdata.cdc.fr:2181/;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.security.credentials.hive.enabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.catalog.spark_catalog : org.apache.iceberg.spark.SparkSessionCatalog
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.am.extraLibraryPath : /opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p1010.57518810/lib/hadoop/lib/native
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.dist.archives : file:///dz-bigdata-ciam-rec/applis/ci6/bin/ci6-0.0.1_pyspark_payload.zip#payload
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.shuffle.io.serverThreads : 128
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.appMasterEnv.YCFSHELL : UDCI6AJA2_CONSUMER.KSH
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.tags : ci6_UDCI6AJA2_CONSUMER
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.serializer : org.apache.spark.serializer.KryoSerializer
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.shuffle.file.buffer : 1m
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.sources.commitProtocolClass : org.apache.spark.sql.execution.datasources.SQLHadoopMapReduceCommitProtocol
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.iceberg.enabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executorEnv.MKL_NUM_THREADS : 1
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter.param.PROXY_HOSTS : dbmndeva31004.hopr.bigdata.cdc.fr,dbmndeva31005.hopr.bigdata.cdc.fr
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.streaming.streamingQueryListeners : com.hortonworks.spark.atlas.SparkAtlasStreamingQueryEventTracker
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.extensions : org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.sources.partitionOverwriteMode : dynamic
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.driver.log.persistToDfs.enabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.config.replacementPath : {{HADOOP_COMMON_HOME}}/../../..
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executorEnv.OPENBLAS_NUM_THREADS : 1
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executorEnv.http_proxy : http://pxy-http-srv.serv.cdc.fr:8080
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.hadoop.dfs.nameservices : bddev01
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.ui.requestHeaderSize : 65536
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.history.ui.admin.acls.groups : gf_hdp_admin_bd3
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.dynamicAllocation.schedulerBacklogTimeout : 2
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.submit.deployMode : cluster
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.hive.hiveserver2.jdbc.url.principal : hive/_HOST@AP.CDC.FR
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter.param.PROXY_URI_BASES : http://dbmndeva31004.hopr.bigdata.cdc.fr:8088/proxy/application_1748948011274_72440,http://dbmndeva31005.hopr.bigdata.cdc.fr:8088/proxy/application_1748948011274_72440
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.dynamicAllocation.executorIdleTimeout : 60
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.hadoop.mapreduce.fileoutputcommitter.algorithm.version : 1
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.authenticate : false
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.datasource.hive.warehouse.read.mode : DIRECT_READER_V2
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executor.instances : 2
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.queue : rec
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.app.id : application_1748948011274_72440
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.user.groups.mapping : ""
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.driver.host : dbdndeva31017.hopr.bigdata.cdc.fr
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.historyServer.allowTracking : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.admin.acls.groups : gf_hdp_admin_bd3
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.port.maxRetries : 200
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.parquet.writeLegacyFormat : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executor.cores : 2
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.parquet.output.committer.class : org.apache.spark.internal.io.cloud.BindingParquetOutputCommitter
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter.param.RM_HA_URLS : dbmndeva31004.hopr.bigdata.cdc.fr:8088,dbmndeva31005.hopr.bigdata.cdc.fr:8088
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.lineage.enabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.driver.extraJavaOptions : -XX:+IgnoreUnrecognizedVMOptions --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.nio.cs=ALL-UNNAMED --add-opens=java.base/sun.security.action=ALL-UNNAMED --add-opens=java.base/sun.util.calendar=ALL-UNNAMED --add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED --add-exports=java.base/sun.net.dns=ALL-UNNAMED --add-exports=java.base/sun.net.util=ALL-UNNAMED -Xss1G
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.extraListeners : com.hortonworks.spark.atlas.SparkAtlasEventTracker
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.master : yarn
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executor.extraLibraryPath : /opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p1010.57518810/lib/hadoop/lib/native
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.secondary.jars : postgresql-42.5.5.jar,postgresql-42.5.6.jar,postgresql-42.7.2.jar,postgresql-42.7.3.jar,ojdbc6.jar,ImpalaJDBC41.jar
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.shuffle.io.backLog : 8192
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.unsafe.sorter.spill.reader.buffer.size : 1m
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.hadoop.fs.s3a.committer.name : directory
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.datasource.hive.warehouse.load.staging.dir : /tmp
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.eventLog.enabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.dynamicAllocation.minExecutors : 1
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.queryExecutionListeners : com.hortonworks.spark.atlas.SparkAtlasEventTracker
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.appMasterEnv.MKL_NUM_THREADS : 1
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executor.memory : 5g
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.shuffle.service.port : 7447
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.driver.memory : 5g
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.jars : local:/opt/cloudera/parcels/SPARK3-3.3.2.3.3.7191000.0-78-1.p0.56279928/lib/spark3/jars/*,local:/opt/cloudera/parcels/SPARK3-3.3.2.3.3.7191000.0-78-1.p0.56279928/lib/spark3/hive/*
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.ui.view.acls : csoprasteriacx-e,csoprasteriacs-e,csoprasteriaby-e,csoprasteriabs-e,rangerdecouverte3,csoprasteriada-e,csoprasteriacw-e,hsahnoun,hgordi,cbtiaa-e
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.driver.port : 40321
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.driver.extraLibraryPath : /opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p1010.57518810/lib/hadoop/lib/native
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.dist.jars : file:/opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p1010.57518810/jars/postgresql-42.5.5.jar,file:/opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p1010.57518810/jars/postgresql-42.5.6.jar,file:/opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p1010.57518810/jars/postgresql-42.7.2.jar,file:/opt/cloudera/parcels/CDH-7.1.9-1.cdh7.1.9.p1010.57518810/jars/postgresql-42.7.3.jar,file:///usr/share/java/ojdbc6.jar,file:/dz-bigdata-plateforme-dev/applis/bd3/jars/ImpalaJDBC41.jar
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.dynamicAllocation.initialExecutors : 1
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.autoBroadcastJoinThreshold : 26214400
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.ui.filters : org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.ui.view.acls.groups : gf_hdp_dev_ci6_moe
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.dist.files : file:///tmp/svchdp-etl-ci6-rec.1655058#./tmp/svchdp-etl-ci6-rec.1655058,file:///etc/hive/conf.cloudera.hive/hive-site.xml,file:///dz-bigdata-ciam-rec/applis/ci6/parm/ci6.conf,file:///dz-bigdata-ciam-rec/applis/ci6/parm/ci6_logging.conf
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.network.crypto.enabled : false
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.hadoop.dfs.namenode.kerberos.principal.pattern : *
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.eventLog.dir : hdfs://bddev01/spark3-history/
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.history.fs.logDirectory : hdfs://spark3-history/
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.ui.enabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.hadoop.iceberg.engine.hive.enabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executor.id : driver
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.appMasterEnv.PYSPARK_PYTHON : ./payload/bin/python
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.config.gatewayPath : /opt/cloudera/parcels
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.catalogImplementation : hive
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.acls.enable : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.app.submitTime : 1750682054615
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.driver.log.dfsDir : /user/spark/driver3Logs
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.jars.repositories : https://artifactory.serv.cdc.fr/artifactory/maven-remotes-repo
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.app.id : application_1748948011274_72440
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.ui.killEnabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.app.name : ci6
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.hadoop.hive.metastore.client.socket.timeout : 600
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executorEnv.PYTHONPATH : /opt/cloudera/parcels/SPARK3-3.3.2.3.3.7191000.0-78-1.p0.56279928/lib/spark3/python/lib/py4j-0.10.9.5-src.zip<CPS>/opt/cloudera/parcels/SPARK3-3.3.2.3.3.7191000.0-78-1.p0.56279928/lib/spark3/python/lib/pyspark.zip
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.io.encryption.enabled : false
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.statistics.fallBackToHdfs : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.maxAppAttempts : 1
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.datasource.hive.warehouse.metastoreUri : thrift://dbmndeva31004.hopr.bigdata.cdc.fr:9083,thrift://dbmndeva31005.hopr.bigdata.cdc.fr:9083
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.serializer.objectStreamReset : 100
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.history.ui.acls.enable : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.app.attempt.id : 1
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.app.container.log.dir : /data2/hadoop/yarn/log/application_1748948011274_72440/container_e1603_1748948011274_72440_01_000001
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.warehouse.dir : hdfs://bddev01/warehouse/tablespace/managed/hive
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.app.startTime : 1750682072326
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.shuffle.service.enabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executor.extraJavaOptions : -XX:+IgnoreUnrecognizedVMOptions --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.nio.cs=ALL-UNNAMED --add-opens=java.base/sun.security.action=ALL-UNNAMED --add-opens=java.base/sun.util.calendar=ALL-UNNAMED --add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED --add-exports=java.base/sun.net.dns=ALL-UNNAMED --add-exports=java.base/sun.net.util=ALL-UNNAMED -Xss1G
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.executorEnv.https_proxy : http://pxy-http-srv.serv.cdc.fr:8080
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.appMasterEnv.OPENBLAS_NUM_THREADS : 1
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.driver.extraClassPath : /dz-bigdata-plateforme-dev/applis/bd3/jars/*.jar
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.ui.port : 0
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.io.compression.lz4.blockSize : 128kb
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.appMasterEnv.KRB5CCNAME : ./tmp/svchdp-etl-ci6-rec.1655058
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.hadoop.hive.zookeeper.quorum : dbmndeva31004.hopr.bigdata.cdc.fr:2181,dbmndeva31005.hopr.bigdata.cdc.fr:2181,dbmndeva31006.hopr.bigdata.cdc.fr:2181
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.rdd.compress : True
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.security.credentials.hiveserver2.enabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.submit.pyFiles : 
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.dynamicAllocation.enabled : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.historyServer.address : http://dbmndeva31004.hopr.bigdata.cdc.fr:18089
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.shuffle.unsafe.file.output.buffer : 5m
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.yarn.isPython : true
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-		spark.sql.catalog.spark_catalog.type : hive
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-DEBUG-	 Fin Traitement creation Spark session : 0.7505886554718018 s
+2025/06/23 14:34:45-traitement_spark-1476141-root-INFO-Flux specifier : structures
+2025/06/23 14:34:45-traitement_spark-1476141-root-INFO-Start Consumer
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.hive-INFO-init of hiveUtils
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.spark-INFO-DEBUT getSparkInstance
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.impala-INFO-init of impalaUtils
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.configuration-INFO-INFO: recuperation des variables de configuration
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.configuration-INFO-INFO: app_name : ci6
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.configuration-INFO-INFO: DRIVER :  dbdndeva31017.hopr.bigdata.cdc.fr
+schema_registry_url:https://cp-schema-registry-rc01-rec.hpocdc.local
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.configuration-INFO-set_checkpoint
+2025/06/23 14:34:45-traitement_spark-1476141-icdc.hdputils.hdfs-INFO-DEBUT: fonctions: test_exist_hdfs_dir pour le path: /rec/ep/flux_entrant/ci6/checkpoint/structures 
+2025/06/23 14:34:47-traitement_spark-1476141-icdc.hdputils.hdfs-DEBUG- Le DIR : /rec/ep/flux_entrant/ci6/checkpoint/structures n existe pas sur HDFS 
+2025/06/23 14:34:47-traitement_spark-1476141-icdc.hdputils.hdfs-INFO-DEBUT: fonctions: mkdir_in_hdfs pour le dir: /rec/ep/flux_entrant/ci6/checkpoint/structures 
+2025/06/23 14:34:49-traitement_spark-1476141-icdc.hdputils.hdfs-INFO-le dir /rec/ep/flux_entrant/ci6/checkpoint/structures a bien ete cree 
+2025/06/23 14:34:49-traitement_spark-1476141-icdc.hdputils.configuration-INFO-set_starting_offsets
+2025/06/23 14:34:49-traitement_spark-1476141-icdc.hdputils.configuration-ERROR-Unable to infer schema for JSON. It must be specified manually.
+2025/06/23 14:34:49-traitement_spark-1476141-icdc.hdputils.configuration-INFO-earliest
+2025/06/23 14:34:49-traitement_spark-1476141-icdc.hdputils.configuration-INFO-selection of reader mode
+2025/06/23 14:34:49-traitement_spark-1476141-icdc.hdputils.configuration-INFO-Bascule en mode subscribe du topic
+2025/06/23 14:34:49-traitement_spark-1476141-icdc.hdputils.configuration-INFO-dsraw.load
+2025/06/23 14:34:51-traitement_spark-1476141-icdc.hdputils.configuration-INFO-dsraw.load.ok
+Traceback (most recent call last):
+  File "/data1/hadoop/yarn/local/usercache/svchdp-etl-ci6-rec/appcache/application_1748948011274_72440/container_e1603_1748948011274_72440_01_000001/payload/lib/python3.8/site-packages/consumer/consumer.py", line 185, in submit
+    if len(df.take(1)) > 0:  # Check first row, if empty return df
+  File "/opt/cloudera/parcels/SPARK3-3.3.2.3.3.7191000.0-78-1.p0.56279928/lib/spark3/python/lib/pyspark.zip/pyspark/sql/dataframe.py", line 868, in take
+  File "/opt/cloudera/parcels/SPARK3-3.3.2.3.3.7191000.0-78-1.p0.56279928/lib/spark3/python/lib/pyspark.zip/pyspark/sql/dataframe.py", line 817, in collect
+  File "/opt/cloudera/parcels/SPARK3-3.3.2.3.3.7191000.0-78-1.p0.56279928/lib/spark3/python/lib/py4j-0.10.9.5-src.zip/py4j/java_gateway.py", line 1321, in __call__
+  File "/opt/cloudera/parcels/SPARK3-3.3.2.3.3.7191000.0-78-1.p0.56279928/lib/spark3/python/lib/pyspark.zip/pyspark/sql/utils.py", line 190, in deco
+  File "/opt/cloudera/parcels/SPARK3-3.3.2.3.3.7191000.0-78-1.p0.56279928/lib/spark3/python/lib/py4j-0.10.9.5-src.zip/py4j/protocol.py", line 326, in get_return_value
+py4j.protocol.Py4JJavaError: An error occurred while calling o393.collectToPython.
+: org.apache.spark.SparkException: Exception thrown in awaitResult: 
+	at org.apache.spark.util.ThreadUtils$.awaitResult(ThreadUtils.scala:301)
+	at org.apache.spark.util.UninterruptibleThreadRunner.runUninterruptibly(UninterruptibleThreadRunner.scala:46)
+	at org.apache.spark.sql.kafka010.KafkaOffsetReaderConsumer.fetchTopicPartitions(KafkaOffsetReaderConsumer.scala:129)
+	at org.apache.spark.sql.kafka010.KafkaOffsetReaderConsumer.fetchPartitionOffsets(KafkaOffsetReaderConsumer.scala:150)
+	at org.apache.spark.sql.kafka010.KafkaOffsetReaderConsumer.getOffsetRangesFromUnresolvedOffsets(KafkaOffsetReaderConsumer.scala:422)
+	at org.apache.spark.sql.kafka010.KafkaRelation.buildScan(KafkaRelation.scala:67)
+	at org.apache.spark.sql.execution.datasources.DataSourceStrategy$.apply(DataSourceStrategy.scala:344)
+	at org.apache.spark.sql.catalyst.planning.QueryPlanner.$anonfun$plan$1(QueryPlanner.scala:63)
+	at scala.collection.Iterator$$anon$11.nextCur(Iterator.scala:486)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:492)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:491)
+	at org.apache.spark.sql.catalyst.planning.QueryPlanner.plan(QueryPlanner.scala:93)
+	at org.apache.spark.sql.execution.SparkStrategies.plan(SparkStrategies.scala:69)
+	at org.apache.spark.sql.catalyst.planning.QueryPlanner.$anonfun$plan$3(QueryPlanner.scala:78)
+	at scala.collection.TraversableOnce$folder$1.apply(TraversableOnce.scala:196)
+	at scala.collection.TraversableOnce$folder$1.apply(TraversableOnce.scala:194)
+	at scala.collection.Iterator.foreach(Iterator.scala:943)
+	at scala.collection.Iterator.foreach$(Iterator.scala:943)
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1431)
+	at scala.collection.TraversableOnce.foldLeft(TraversableOnce.scala:199)
+	at scala.collection.TraversableOnce.foldLeft$(TraversableOnce.scala:192)
+	at scala.collection.AbstractIterator.foldLeft(Iterator.scala:1431)
+	at org.apache.spark.sql.catalyst.planning.QueryPlanner.$anonfun$plan$2(QueryPlanner.scala:75)
+	at scala.collection.Iterator$$anon$11.nextCur(Iterator.scala:486)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:492)
+	at org.apache.spark.sql.catalyst.planning.QueryPlanner.plan(QueryPlanner.scala:93)
+	at org.apache.spark.sql.execution.SparkStrategies.plan(SparkStrategies.scala:69)
+	at org.apache.spark.sql.execution.QueryExecution$.createSparkPlan(QueryExecution.scala:460)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$sparkPlan$1(QueryExecution.scala:146)
+	at org.apache.spark.sql.catalyst.QueryPlanningTracker.measurePhase(QueryPlanningTracker.scala:111)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$2(QueryExecution.scala:186)
+	at org.apache.spark.sql.execution.QueryExecution$.withInternalError(QueryExecution.scala:511)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$1(QueryExecution.scala:186)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:779)
+	at org.apache.spark.sql.execution.QueryExecution.executePhase(QueryExecution.scala:185)
+	at org.apache.spark.sql.execution.QueryExecution.sparkPlan$lzycompute(QueryExecution.scala:146)
+	at org.apache.spark.sql.execution.QueryExecution.sparkPlan(QueryExecution.scala:139)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executedPlan$1(QueryExecution.scala:159)
+	at org.apache.spark.sql.catalyst.QueryPlanningTracker.measurePhase(QueryPlanningTracker.scala:111)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$2(QueryExecution.scala:186)
+	at org.apache.spark.sql.execution.QueryExecution$.withInternalError(QueryExecution.scala:511)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$1(QueryExecution.scala:186)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:779)
+	at org.apache.spark.sql.execution.QueryExecution.executePhase(QueryExecution.scala:185)
+	at org.apache.spark.sql.execution.QueryExecution.executedPlan$lzycompute(QueryExecution.scala:159)
+	at org.apache.spark.sql.execution.QueryExecution.executedPlan(QueryExecution.scala:152)
+	at org.apache.spark.sql.execution.QueryExecution.simpleString(QueryExecution.scala:205)
+	at org.apache.spark.sql.execution.QueryExecution.org$apache$spark$sql$execution$QueryExecution$$explainString(QueryExecution.scala:250)
+	at org.apache.spark.sql.execution.QueryExecution.explainString(QueryExecution.scala:219)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$6(SQLExecution.scala:103)
+	at org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:169)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:95)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:779)
+	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:64)
+	at org.apache.spark.sql.Dataset.withAction(Dataset.scala:3862)
+	at org.apache.spark.sql.Dataset.collectToPython(Dataset.scala:3691)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)
+	at py4j.Gateway.invoke(Gateway.java:282)
+	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+	at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:182)
+	at py4j.ClientServerConnection.run(ClientServerConnection.java:106)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.apache.kafka.common.KafkaException: Unexpected error from SyncGroup: The request timed out.
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$SyncGroupResponseHandler.handle(AbstractCoordinator.java:852)
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$SyncGroupResponseHandler.handle(AbstractCoordinator.java:771)
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$CoordinatorResponseHandler.onSuccess(AbstractCoordinator.java:1260)
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$CoordinatorResponseHandler.onSuccess(AbstractCoordinator.java:1235)
+	at org.apache.kafka.clients.consumer.internals.RequestFuture$1.onSuccess(RequestFuture.java:206)
+	at org.apache.kafka.clients.consumer.internals.RequestFuture.fireSuccess(RequestFuture.java:169)
+	at org.apache.kafka.clients.consumer.internals.RequestFuture.complete(RequestFuture.java:129)
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient$RequestFutureCompletionHandler.fireCompletion(ConsumerNetworkClient.java:617)
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.firePendingCompletedRequests(ConsumerNetworkClient.java:427)
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:312)
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:230)
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:214)
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.joinGroupIfNeeded(AbstractCoordinator.java:451)
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.ensureActiveGroup(AbstractCoordinator.java:385)
+	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.poll(ConsumerCoordinator.java:557)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.updateAssignmentMetadataIfNeeded(KafkaConsumer.java:1272)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:1238)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:1169)
+	at org.apache.spark.sql.kafka010.KafkaOffsetReaderConsumer.$anonfun$fetchTopicPartitions$1(KafkaOffsetReaderConsumer.scala:132)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:659)
+	at scala.util.Success.$anonfun$map$1(Try.scala:255)
+	at scala.util.Success.map(Try.scala:213)
+	at scala.concurrent.Future.$anonfun$map$1(Future.scala:292)
+	at scala.concurrent.impl.Promise.liftedTree1$1(Promise.scala:33)
+	at scala.concurrent.impl.Promise.$anonfun$transform$1(Promise.scala:33)
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:64)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.spark.util.UninterruptibleThreadRunner$$anon$1.run(UninterruptibleThreadRunner.scala:33)
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "main.py", line 21, in <module>
+    ConsumerCiam(spark_utils, conf_utils, flux).submit()    
+  File "/data1/hadoop/yarn/local/usercache/svchdp-etl-ci6-rec/appcache/application_1748948011274_72440/container_e1603_1748948011274_72440_01_000001/payload/lib/python3.8/site-packages/consumer/consumer.py", line 200, in submit
+    raise Exception(f"Unable to consume Kafka topic: {str(e)}")
+Exception: Unable to consume Kafka topic: An error occurred while calling o393.collectToPython.
+: org.apache.spark.SparkException: Exception thrown in awaitResult: 
+	at org.apache.spark.util.ThreadUtils$.awaitResult(ThreadUtils.scala:301)
+	at org.apache.spark.util.UninterruptibleThreadRunner.runUninterruptibly(UninterruptibleThreadRunner.scala:46)
+	at org.apache.spark.sql.kafka010.KafkaOffsetReaderConsumer.fetchTopicPartitions(KafkaOffsetReaderConsumer.scala:129)
+	at org.apache.spark.sql.kafka010.KafkaOffsetReaderConsumer.fetchPartitionOffsets(KafkaOffsetReaderConsumer.scala:150)
+	at org.apache.spark.sql.kafka010.KafkaOffsetReaderConsumer.getOffsetRangesFromUnresolvedOffsets(KafkaOffsetReaderConsumer.scala:422)
+	at org.apache.spark.sql.kafka010.KafkaRelation.buildScan(KafkaRelation.scala:67)
+	at org.apache.spark.sql.execution.datasources.DataSourceStrategy$.apply(DataSourceStrategy.scala:344)
+	at org.apache.spark.sql.catalyst.planning.QueryPlanner.$anonfun$plan$1(QueryPlanner.scala:63)
+	at scala.collection.Iterator$$anon$11.nextCur(Iterator.scala:486)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:492)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:491)
+	at org.apache.spark.sql.catalyst.planning.QueryPlanner.plan(QueryPlanner.scala:93)
+	at org.apache.spark.sql.execution.SparkStrategies.plan(SparkStrategies.scala:69)
+	at org.apache.spark.sql.catalyst.planning.QueryPlanner.$anonfun$plan$3(QueryPlanner.scala:78)
+	at scala.collection.TraversableOnce$folder$1.apply(TraversableOnce.scala:196)
+	at scala.collection.TraversableOnce$folder$1.apply(TraversableOnce.scala:194)
+	at scala.collection.Iterator.foreach(Iterator.scala:943)
+	at scala.collection.Iterator.foreach$(Iterator.scala:943)
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1431)
+	at scala.collection.TraversableOnce.foldLeft(TraversableOnce.scala:199)
+	at scala.collection.TraversableOnce.foldLeft$(TraversableOnce.scala:192)
+	at scala.collection.AbstractIterator.foldLeft(Iterator.scala:1431)
+	at org.apache.spark.sql.catalyst.planning.QueryPlanner.$anonfun$plan$2(QueryPlanner.scala:75)
+	at scala.collection.Iterator$$anon$11.nextCur(Iterator.scala:486)
+	at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:492)
+	at org.apache.spark.sql.catalyst.planning.QueryPlanner.plan(QueryPlanner.scala:93)
+	at org.apache.spark.sql.execution.SparkStrategies.plan(SparkStrategies.scala:69)
+	at org.apache.spark.sql.execution.QueryExecution$.createSparkPlan(QueryExecution.scala:460)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$sparkPlan$1(QueryExecution.scala:146)
+	at org.apache.spark.sql.catalyst.QueryPlanningTracker.measurePhase(QueryPlanningTracker.scala:111)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$2(QueryExecution.scala:186)
+	at org.apache.spark.sql.execution.QueryExecution$.withInternalError(QueryExecution.scala:511)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$1(QueryExecution.scala:186)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:779)
+	at org.apache.spark.sql.execution.QueryExecution.executePhase(QueryExecution.scala:185)
+	at org.apache.spark.sql.execution.QueryExecution.sparkPlan$lzycompute(QueryExecution.scala:146)
+	at org.apache.spark.sql.execution.QueryExecution.sparkPlan(QueryExecution.scala:139)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executedPlan$1(QueryExecution.scala:159)
+	at org.apache.spark.sql.catalyst.QueryPlanningTracker.measurePhase(QueryPlanningTracker.scala:111)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$2(QueryExecution.scala:186)
+	at org.apache.spark.sql.execution.QueryExecution$.withInternalError(QueryExecution.scala:511)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$1(QueryExecution.scala:186)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:779)
+	at org.apache.spark.sql.execution.QueryExecution.executePhase(QueryExecution.scala:185)
+	at org.apache.spark.sql.execution.QueryExecution.executedPlan$lzycompute(QueryExecution.scala:159)
+	at org.apache.spark.sql.execution.QueryExecution.executedPlan(QueryExecution.scala:152)
+	at org.apache.spark.sql.execution.QueryExecution.simpleString(QueryExecution.scala:205)
+	at org.apache.spark.sql.execution.QueryExecution.org$apache$spark$sql$execution$QueryExecution$$explainString(QueryExecution.scala:250)
+	at org.apache.spark.sql.execution.QueryExecution.explainString(QueryExecution.scala:219)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$6(SQLExecution.scala:103)
+	at org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:169)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:95)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:779)
+	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:64)
+	at org.apache.spark.sql.Dataset.withAction(Dataset.scala:3862)
+	at org.apache.spark.sql.Dataset.collectToPython(Dataset.scala:3691)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)
+	at py4j.Gateway.invoke(Gateway.java:282)
+	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+	at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:182)
+	at py4j.ClientServerConnection.run(ClientServerConnection.java:106)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.apache.kafka.common.KafkaException: Unexpected error from SyncGroup: The request timed out.
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$SyncGroupResponseHandler.handle(AbstractCoordinator.java:852)
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$SyncGroupResponseHandler.handle(AbstractCoordinator.java:771)
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$CoordinatorResponseHandler.onSuccess(AbstractCoordinator.java:1260)
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator$CoordinatorResponseHandler.onSuccess(AbstractCoordinator.java:1235)
+	at org.apache.kafka.clients.consumer.internals.RequestFuture$1.onSuccess(RequestFuture.java:206)
+	at org.apache.kafka.clients.consumer.internals.RequestFuture.fireSuccess(RequestFuture.java:169)
+	at org.apache.kafka.clients.consumer.internals.RequestFuture.complete(RequestFuture.java:129)
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient$RequestFutureCompletionHandler.fireCompletion(ConsumerNetworkClient.java:617)
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.firePendingCompletedRequests(ConsumerNetworkClient.java:427)
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:312)
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:230)
+	at org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient.poll(ConsumerNetworkClient.java:214)
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.joinGroupIfNeeded(AbstractCoordinator.java:451)
+	at org.apache.kafka.clients.consumer.internals.AbstractCoordinator.ensureActiveGroup(AbstractCoordinator.java:385)
+	at org.apache.kafka.clients.consumer.internals.ConsumerCoordinator.poll(ConsumerCoordinator.java:557)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.updateAssignmentMetadataIfNeeded(KafkaConsumer.java:1272)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:1238)
+	at org.apache.kafka.clients.consumer.KafkaConsumer.poll(KafkaConsumer.java:1169)
+	at org.apache.spark.sql.kafka010.KafkaOffsetReaderConsumer.$anonfun$fetchTopicPartitions$1(KafkaOffsetReaderConsumer.scala:132)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:659)
+	at scala.util.Success.$anonfun$map$1(Try.scala:255)
+	at scala.util.Success.map(Try.scala:213)
+	at scala.concurrent.Future.$anonfun$map$1(Future.scala:292)
+	at scala.concurrent.impl.Promise.liftedTree1$1(Promise.scala:33)
+	at scala.concurrent.impl.Promise.$anonfun$transform$1(Promise.scala:33)
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:64)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.spark.util.UninterruptibleThreadRunner$$anon$1.run(UninterruptibleThreadRunner.scala:33)
+
+
+End of LogType:stdout
+***********************************************************************
+

@@ -1,0 +1,225 @@
+#!groovy
+@Library(value = 'icdc-jenkins-shared-library', changelog = false) _
+String sasPathBase ='/dsasdeidpi/MA7-USINE-LOGICIELLE-DEI-3173/bigdata-ci6_consumer-ci6'
+String applicationName = 'bigdata-ciam-ci6-batch'
+String projectName = 'bigdata-ciam-ci6'
+String pythonVersion = '3.8'
+String buildTool = 'build_bd_pyspark'
+Boolean isQualimetryEnabled = false
+// Doit-on upload au sas
+Boolean isSasUploadEnabled = true
+// doit-on pousser vers Fusion ?
+Boolean isFusionPlugginEnabled = true
+// doit-on pousser vers artifactory
+Boolean isArtifactoryPlugginEnabled = false
+// Si on pousse sur artifactory, est-ce en tant que snapshot ?
+Boolean isSnapshotRelease = false
+
+// Permet de forcer le chemin vers une version de python (notamment pour pyspark/BigData)
+String forcedPythonPath = ''
+// Permet d'inclure le répertoire parm dans la livraison si activé.
+// Par défaut, le répertoire parm n'est pas livré pour ne pas écraser d'éventuelles modifications par DPI.
+Boolean isIncludeParm = true
+// Choix de la version du contructeur icdc-packaging
+String icdcPackagingVersion = 'icdc-packaging<4'
+// Doit on choisi la version pre release du contructeur icdc-packaging ?
+Boolean isIcdcPackagingPreRelease = false
+// permet de zaper le formulaire de saisie manuelle des versions
+Boolean skipUserPrompt  = true
+String resourcePath = 'dist'
+String resourceType = 'TARGZ'
+String packageType = 'BATCH'
+String environmentCode = 'dv'
+String deploymentMode = 'deploy'
+String environmentCodeRec = 'rc'
+String deploymentModeRec = 'promote'
+//
+pipeline {
+    agent {
+        kubernetes {
+            label 'python-packaging'
+            defaultContainer 'jnlp'
+            yaml libraryResource('podTemplates/python/python-ci-icdc-legacy.yaml')
+
+        }
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        skipDefaultCheckout true
+    }
+    stages {
+        stage('Rappel des variables') {
+            //when { expression { (env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME ==~ /^release.*$/) } }
+            steps {
+                echo "applicationName=${applicationName}"
+                echo "buildTool=${buildTool}"
+                echo "deploymentMode=${deploymentModeRec}"
+                echo "environmentCodeRec=${environmentCodeRec}"
+                echo "deploymentMode=${deploymentMode}"
+                echo "environmentCode=${environmentCode}"
+                echo "forcedPythonPath=${forcedPythonPath}"
+                echo "isIncludeParm=${isIncludeParm}"
+                echo "isArtifactoryPlugginEnabled=${isArtifactoryPlugginEnabled}"
+                echo "isFusionPlugginEnabled=${isFusionPlugginEnabled}"
+                echo "isQualimetryEnabled=${isQualimetryEnabled}"
+                echo "isSasUploadEnabled=${isSasUploadEnabled}"
+                echo "packageType=${packageType}"
+                echo "projectName=${projectName}"
+                echo "pythonVersion=${pythonVersion}"
+                echo "resourcePath=${resourcePath}"
+                echo "resourceType=${resourceType}"
+                echo "sasPathBase=${sasPathBase}"
+                echo "skipUserPrompt=${skipUserPrompt}"
+                echo "workspace_parent=${WORKSPACE}"
+            }
+        }
+        stage('Récupération du code') {
+            //when { expression { (env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME ==~ /^release.*$/) } }
+            steps {
+                script {
+                    dir('projet') { checkout scm }
+                }
+            }
+        }
+        stage('Récupération de variables projet') {
+            //when { expression { (env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME ==~ /^release.*$/) } }
+            steps {
+                container('python') {
+                    script {
+                        projet = getJobBaseNamePipelineMultibranch()
+                        echo "projet=${projet}"
+                        sasPath = "${sasPathBase}/${projet}"
+                        echo "sasPath=${sasPath}"
+                        packageVersion = pythonReturnPackageVersion(pythonVersion: "${pythonVersion}")
+                        echo "packageVersion=${packageVersion}"
+                        packageName = pythonReturnPackageName(pythonVersion: "${pythonVersion}")
+                        echo "packageName=${packageName}"
+                        workspace_parent = WORKSPACE
+                        echo "workspace_parent=${workspace_parent}"
+                    }
+                }
+            }
+        }
+        // stage("Qualimétrie") {
+        //     //when { expression { (isQualimetryEnabled == true) &&  ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME ==~ /^release.*$/)) } }
+        //     steps {
+        //         container('python') {
+        //             script {
+        //                 pythonLintTestCoverage(pythonVersion: "${pythonVersion}")
+        //                 pythonPrepareSonar(pythonVersion: "${pythonVersion}")
+        //             }
+        //         }
+        //         container('sonar') {
+        //             sonarScanner(circuitBreaker: true)
+        //         }
+        //     }
+        // }
+        stage('Construction') {
+            //when { expression { ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME ==~ /^release.*$/))  } }
+            steps {
+                container('python') {
+                    script{
+                        pythonBuildTool(
+                                buildTool: buildTool,
+                                isIncludeParm: isIncludeParm,
+                                pythonVersion: pythonVersion,
+                                forcedPythonPath: forcedPythonPath,
+                                icdcPackagingVersion: icdcPackagingVersion,
+                                isIcdcPackagingPreRelease: isIcdcPackagingPreRelease
+                            )
+                    }
+                }
+            }
+        }
+        stage('DepotSAS') {
+            //when { expression { (isSasUploadEnabled == true) && ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME ==~ /^release.*$/)) }  }
+            steps {
+                container('python') {
+                    script {
+                        pythonUploadToSas(sasPath)
+                    }
+                }
+            }
+        }
+        stage('Déploiement fusion') {
+            //when { expression { (isFusionPlugginEnabled == true) && ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME ==~ /^release.*$/)) } }
+            steps {
+                container('python') {
+                    fusionDelivery(
+                        applicationName: applicationName,
+                        environmentCode: environmentCode,
+                        packageType: packageType,
+                        projectName: projectName,
+                        resourcePath: resourcePath,
+                        resourceType: resourceType,
+                        skipUserPrompt: skipUserPrompt,
+                        deploymentMode: deploymentMode
+                    )
+                }
+            }
+        }
+        // stage('Publication Artifactory') {
+        //     when { expression { (isArtifactoryPlugginEnabled == true) && ((env.BRANCH_NAME == 'develop')) } }
+        //     steps {
+        //         container('python') {
+        //             script {
+        //                 pythonPaquetPip("${pythonVersion}")
+        //                 pythonUploadToArtifactory(
+        //                     packageName: packageName,
+        //                     packageVersion: packageVersion,
+        //                     isSnapshotRelease: isSnapshotRelease
+        //                 )
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Promotion recette via fusion') {
+        //     when {expression{ ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME ==~ /^release.*$/))}}
+        //     steps {
+        //         script{
+        //             SKIP_DEFAULT_CHOICE = 'Yes'
+        //             try{
+        //                 timeout(time: 15, unit: 'MINUTES') { //SECONDS | MINUTES | HOURS | DAYS
+        //                     script{
+        //                         def userInput = input(id: 'input',
+        //                             message: 'Want to skip the promotion stage?',
+        //                             parameters: [choice(choices: ['Yes', 'No'], description: '', name: 'options')]
+        //                             )
+        //                         echo('User has entered choise skip: ' + userInput)
+        //                         if (userInput == 'Yes') {
+        //                             echo 'Skip : la promotion recette via fusion'
+        //                             return
+        //                         }
+        //                         echo 'Promotion recette via fusion'
+        //                         container('python') {
+        //                             fusionDelivery(
+        //                                 applicationName: applicationName,
+        //                                 environmentCode: environmentCodeRec,
+        //                                 packageType: packageType,
+        //                                 projectName: projectName,
+        //                                 resourcePath: resourcePath,
+        //                                 resourceType: resourceType,
+        //                                 skipUserPrompt: skipUserPrompt,
+        //                                 deploymentMode: deploymentModeRec
+        //                             )
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //             catch (err) {
+        //                 def user = err.getCauses()[0].getUser()
+        //                 echo user.toString()
+        //                 if ('SYSTEM' == user.toString()) { // SYSTEM means timeout
+        //                     echo ('Input timeout expired, default choice will be used: ' + SKIP_DEFAULT_CHOICE)
+        //                     userInput = SKIP_DEFAULT_CHOICE
+        //                     echo 'Skip : la promotion recette via fusion'
+        //                     return
+        //                 }
+        //                 echo "Input aborted by: [${user}]"
+        //                 error("Pipeline aborted by: [${user}]")
+        //             }
+        //         }
+        //     }
+        // }
+    }
+}

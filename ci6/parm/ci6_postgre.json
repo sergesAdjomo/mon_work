@@ -1,0 +1,30 @@
+{
+    "typeSource":"bdd",
+    "databases":[
+       {
+          "omair":{
+             "codeAppli":"ci6",
+             "tables":[
+                {
+                  "data_gen_2" : {
+                     "tableHive":"data_gen_2",
+                     "importType":"full",
+                     "refType":"",
+                     "nomColonneRef":"",
+                     "partition":false,
+                     "partitionStandard":true,
+                     "split_by": "id",
+                     "champPartition":"",
+                     "operationPartition":"",
+                     "mapper":3,
+                     "delimiteur":"\\001",
+                    "pathStagingHDFS":"/%(ENVIRONMENT)s/ep/flux_entrant/ci6/depot/staging/data_gen_2",
+                     "args":"--split-by id --null-string '\\\\N' --null-non-string '\\\\N' --hive-drop-import-delims --fetch-size=5000"
+                     
+                     }
+                  }
+             ]
+          }
+       }
+    ]
+ }
