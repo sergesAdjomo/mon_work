@@ -33,9 +33,9 @@ def expose_data(flux: str) -> None:
     brute_tb = ""
     suffixes = ""
 
-    if flux == "utilisateur":
+    if flux == "utilisateurs":
         table_name = "utilisateur"
-        brute_tb = "ciam_data"
+        brute_tb = "utilisateurs"
         suffixes = [
             "utilisateur",
             "rattachements",
@@ -44,7 +44,7 @@ def expose_data(flux: str) -> None:
             "habilitations",
             "telephone",
             "auth",
-            "auth_type",
+            "authType",
         ]
     elif flux == "structures":
         table_name = "structure"
@@ -144,17 +144,11 @@ def extract_and_write_tables_by_ids(
 
     recursive_extract(df, current_table=root_table_name, id_cols=[])
 
-
 def drop_duplicate_columns(df):
     counter_set = set()
     cols_to_drop = [c for c in df.columns if c in counter_set or counter_set.add(c)]
     print(counter_set)
     return df.drop(*cols_to_drop)
 
-
 def add_insertion_date(df):
     return df.withColumn("xx_date_insertion", lit(datetime.now()))
-
-
-
-
